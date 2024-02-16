@@ -9,3 +9,6 @@ export type StandardVigenereDecryptDto = {
 
 export type AutoKeyVigenereEncryptDto = StandardVigenereEncryptDto;
 export type AutoKeyVigenereDecryptDto = StandardVigenereDecryptDto;
+
+export type ExtendedVigenereEncryptDto = StandardVigenereEncryptDto;
+export type ExtendedVigenereDecryptDto = StandardVigenereDecryptDto;

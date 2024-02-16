@@ -1,30 +1,4 @@
-import { AutoKeyVigenereUseCase, StandardVigenereUseCase } from ".";
-
-describe("Standard Vigenere Use Case", () => {
-  const standardVigenereUseCase = new StandardVigenereUseCase();
-
-  describe("encrypt method", () => {
-    it("should return LVVQHZNGFHRVL", () => {
-      expect(
-        standardVigenereUseCase.encrypt({
-          plainText: "thisplaintext",
-          key: "sony",
-        })
-      ).toBe("LVVQHZNGFHRVL");
-    });
-  });
-
-  describe("decrypt method", () => {
-    it("should return THISPLAINTEXT", () => {
-      expect(
-        standardVigenereUseCase.decrypt({
-          cipherText: "LVVQHZNGFHRVL",
-          key: "sony",
-        })
-      ).toBe("THISPLAINTEXT");
-    });
-  });
-});
+import { AutoKeyVigenereUseCase } from "./auto-key-vigenere";
 
 describe("Auto Key Vigenere Use Case", () => {
   const autoKeyVigenereUseCase = new AutoKeyVigenereUseCase();
@@ -57,7 +31,7 @@ describe("Auto Key Vigenere Use Case", () => {
         autoKeyVigenereUseCase.encrypt({
           plainText: "negarapenghasilminyakmentahdidunia",
           key: "INDO",
-        })
+        }).text
       ).toBe("VRJOEEVEEGWEFOSMAVJMSZCNDMLQBDBQQD");
     });
   });
@@ -68,7 +42,7 @@ describe("Auto Key Vigenere Use Case", () => {
         autoKeyVigenereUseCase.decrypt({
           cipherText: "VRJOEEVEEGWEFOSMAVJMSZCNDMLQBDBQQD",
           key: "INDO",
-        })
+        }).text
       ).toBe("NEGARAPENGHASILMINYAKMENTAHDIDUNIA");
     });
   });

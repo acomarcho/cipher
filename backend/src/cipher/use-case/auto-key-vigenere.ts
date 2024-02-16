@@ -1,49 +1,12 @@
+import { subtractCharacterByKey } from "../../util/alphabetic-cipher";
 import {
-  addCharacterByKey,
-  subtractCharacterByKey,
-} from "../../util/alphabetic-cipher";
-import { modulo } from "../../util/modulo";
-import {
-  AutoKeyVigenereDecryptDto,
   AutoKeyVigenereEncryptDto,
-  StandardVigenereDecryptDto,
-  StandardVigenereEncryptDto,
+  AutoKeyVigenereDecryptDto,
 } from "../input-dto";
-import { StandardVigenereIOBoundary } from "../io-boundary";
+import { AutoKeyVigenereIOBoundary } from "../io-boundary";
+import { StandardVigenereUseCase } from "./standard-vigenere";
 
-export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
-  public encrypt = ({ plainText, key }: StandardVigenereEncryptDto) => {
-    const cipherText: string[] = [];
-
-    for (let i = 0; i < plainText.length; i++) {
-      const encryptedText = addCharacterByKey(
-        plainText[i].toUpperCase(),
-        key[i % key.length].toUpperCase()
-      );
-
-      cipherText.push(encryptedText);
-    }
-
-    return cipherText.join("").toUpperCase();
-  };
-
-  public decrypt = ({ cipherText, key }: StandardVigenereDecryptDto) => {
-    const plainText: string[] = [];
-
-    for (let i = 0; i < cipherText.length; i++) {
-      const decryptedKey = subtractCharacterByKey(
-        cipherText[i].toUpperCase(),
-        key[i % key.length].toUpperCase()
-      );
-
-      plainText.push(decryptedKey);
-    }
-
-    return plainText.join("").toUpperCase();
-  };
-}
-
-export class AutoKeyVigenereUseCase {
+export class AutoKeyVigenereUseCase implements AutoKeyVigenereIOBoundary {
   private standardVigenereUseCase: StandardVigenereUseCase;
 
   constructor() {
