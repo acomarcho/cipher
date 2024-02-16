@@ -6,7 +6,7 @@ describe("Playfair Use Case", () => {
   describe("generateMatrixKey method", () => {
     it("should return the correct matrix", () => {
       expect(
-        playfairUseCase.generateKeyMatrix("JALANGANESHASEPULUH")
+        playfairUseCase.generateKeyMatrix("JALANGANESHASEPULUH").matrix
       ).toStrictEqual([
         ["A", "L", "N", "G", "E"],
         ["S", "H", "P", "U", "B"],
@@ -33,6 +33,17 @@ describe("Playfair Use Case", () => {
         "LA",
         "MX",
       ]);
+    });
+
+    describe("encrypt method", () => {
+      it("should return the ciphertext", () => {
+        expect(
+          playfairUseCase.encrypt({
+            plainText: "TEMUIIBUNANTIMALAM",
+            key: "JALANGANESHASEPULUH",
+          }).text
+        ).toBe("ZBRSFYKUPGLGRKVSNLQV");
+      });
     });
   });
 });
