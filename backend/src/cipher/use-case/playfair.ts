@@ -46,9 +46,44 @@ export class PlayfairUseCase implements PlayfairIOBoundary {
   };
 
   public decrypt = ({ cipherText, key }: PlayfairDecryptDto) => {
+    const { matrix, hashMap } = this.generateKeyMatrix(key);
+    const bigrams = this.generateBigramsFromText(cipherText);
+
+    const plainText: string[] = [];
+
+    bigrams.forEach((bigram) => {
+      const firstCharLocation = hashMap[bigram[0]];
+      const secondCharLocation = hashMap[bigram[1]];
+
+      if (firstCharLocation.row === secondCharLocation.row) {
+        return plainText.push(
+          matrix[firstCharLocation.row][modulo(firstCharLocation.col - 1, 5)] +
+            matrix[secondCharLocation.row][
+              modulo(secondCharLocation.col - 1, 5)
+            ]
+        );
+      }
+
+      if (firstCharLocation.col === secondCharLocation.col) {
+        return plainText.push(
+          matrix[modulo(firstCharLocation.row - 1, 5)][firstCharLocation.col] +
+            matrix[modulo(secondCharLocation.row - 1, 5)][
+              secondCharLocation.col
+            ]
+        );
+      }
+
+      return plainText.push(
+        matrix[firstCharLocation.row][secondCharLocation.col] +
+          matrix[secondCharLocation.row][firstCharLocation.col]
+      );
+    });
+
+    const result = plainText.join("");
+
     return {
-      text: cipherText,
-      base64: cipherText,
+      text: result,
+      base64: btoa(result),
     };
   };
 

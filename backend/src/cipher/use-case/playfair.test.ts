@@ -45,5 +45,16 @@ describe("Playfair Use Case", () => {
         ).toBe("ZBRSFYKUPGLGRKVSNLQV");
       });
     });
+
+    describe("decrypt method", () => {
+      it("should return the plaintext", () => {
+        expect(
+          playfairUseCase.decrypt({
+            cipherText: "ZBRSFYKUPGLGRKVSNLQV",
+            key: "JALANGANESHASEPULUH",
+          }).text
+        ).toBe("TEMUIXIBUNANTIMALAMX");
+      });
+    });
   });
 });
