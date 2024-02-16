@@ -3,6 +3,8 @@ import {
   AutoKeyVigenereEncryptDto,
   ExtendedVigenereDecryptDto,
   ExtendedVigenereEncryptDto,
+  PlayfairDecryptDto,
+  PlayfairEncryptDto,
   StandardVigenereDecryptDto,
   StandardVigenereEncryptDto,
 } from "../input-dto";
@@ -21,4 +23,9 @@ export interface AutoKeyVigenereIOBoundary {
 export interface ExtendedVigenereIOBoundary {
   encrypt: (inputDto: ExtendedVigenereEncryptDto) => CipherResult;
   decrypt: (inputDto: ExtendedVigenereDecryptDto) => CipherResult;
+}
+
+export interface PlayfairIOBoundary {
+  encrypt: (inputDto: PlayfairEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: PlayfairDecryptDto) => CipherResultWithText;
 }
