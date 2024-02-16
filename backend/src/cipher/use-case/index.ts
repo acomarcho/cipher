@@ -1,3 +1,7 @@
+import {
+  addCharacterByKey,
+  subtractCharacterByKey,
+} from "../../util/alphabetic-cipher";
 import { modulo } from "../../util/modulo";
 import {
   AutoKeyVigenereDecryptDto,
@@ -8,21 +12,13 @@ import {
 import { StandardVigenereIOBoundary } from "../io-boundary";
 
 export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
-  private lowercaseAlphabets;
-  private uppercaseAlphabets;
-
-  constructor() {
-    this.lowercaseAlphabets = "abcdefghijklmnopqrstuvwxyz";
-    this.uppercaseAlphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  }
-
   public encrypt = ({ plainText, key }: StandardVigenereEncryptDto) => {
     const cipherText: string[] = [];
 
     for (let i = 0; i < plainText.length; i++) {
-      const encryptedText = this.addCharacterByKey(
-        plainText[i],
-        key[i % key.length]
+      const encryptedText = addCharacterByKey(
+        plainText[i].toUpperCase(),
+        key[i % key.length].toUpperCase()
       );
 
       cipherText.push(encryptedText);
@@ -35,53 +31,15 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
     const plainText: string[] = [];
 
     for (let i = 0; i < cipherText.length; i++) {
-      const decryptedKey = this.subtractCharacterByKey(
-        cipherText[i],
-        key[i % key.length]
+      const decryptedKey = subtractCharacterByKey(
+        cipherText[i].toUpperCase(),
+        key[i % key.length].toUpperCase()
       );
 
       plainText.push(decryptedKey);
     }
 
     return plainText.join("").toUpperCase();
-  };
-
-  public isLowercaseAlphabet = (character: string): boolean => {
-    return this.lowercaseAlphabets.includes(character);
-  };
-
-  public isUppercaseAlphabet = (character: string): boolean => {
-    return this.uppercaseAlphabets.includes(character);
-  };
-
-  public addCharacterByKey = (character: string, key: string): string => {
-    const keyInLowercase = key.toLowerCase();
-    const keyIndex = this.lowercaseAlphabets.indexOf(keyInLowercase);
-
-    const characterInLowercase = character.toLowerCase();
-    const characterIndex =
-      this.lowercaseAlphabets.indexOf(characterInLowercase);
-
-    if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[modulo(characterIndex + keyIndex, 26)];
-    }
-
-    return this.uppercaseAlphabets[modulo(characterIndex + keyIndex, 26)];
-  };
-
-  public subtractCharacterByKey = (character: string, key: string): string => {
-    const keyInLowercase = key.toLowerCase();
-    const keyIndex = this.lowercaseAlphabets.indexOf(keyInLowercase);
-
-    const characterInLowercase = character.toLowerCase();
-    const characterIndex =
-      this.lowercaseAlphabets.indexOf(characterInLowercase);
-
-    if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[modulo(characterIndex - keyIndex, 26)];
-    }
-
-    return this.uppercaseAlphabets[modulo(characterIndex - keyIndex, 26)];
   };
 }
 
@@ -110,33 +68,33 @@ export class AutoKeyVigenereUseCase {
     const newKey = [];
 
     for (const char of key) {
-      newKey.push(char);
+      newKey.push(char.toUpperCase());
     }
 
     let i = 0;
     while (newKey.length < text.length) {
-      newKey.push(text[i]);
+      newKey.push(text[i].toUpperCase());
       i++;
     }
 
-    return newKey.join("").toUpperCase();
+    return newKey.join("");
   };
 
   public generateAutoKeyForDecryption = (text: string, key: string) => {
     const newKey = [];
 
     for (const char of key) {
-      newKey.push(char);
+      newKey.push(char.toUpperCase());
     }
 
     let i = 0;
     while (newKey.length < text.length) {
       newKey.push(
-        this.standardVigenereUseCase.subtractCharacterByKey(text[i], newKey[i])
+        subtractCharacterByKey(text[i].toUpperCase(), newKey[i].toUpperCase())
       );
       i++;
     }
 
-    return newKey.join("").toUpperCase();
+    return newKey.join("");
   };
 }
