@@ -1,4 +1,4 @@
-import { StandardVigenereUseCase } from ".";
+import { AutoKeyVigenereUseCase, StandardVigenereUseCase } from ".";
 
 describe("Standard Vigenere Use Case", () => {
   const standardVigenereUseCase = new StandardVigenereUseCase();
@@ -24,25 +24,25 @@ describe("Standard Vigenere Use Case", () => {
   });
 
   describe("addCharacterByKey method", () => {
-    it("should return c", () => {
-      expect(standardVigenereUseCase.addCharacterByKey("a", "b")).toBe("c");
+    it("should return b", () => {
+      expect(standardVigenereUseCase.addCharacterByKey("a", "b")).toBe("b");
     });
 
-    it("should return B", () => {
-      expect(standardVigenereUseCase.addCharacterByKey("Y", "C")).toBe("B");
+    it("should return A", () => {
+      expect(standardVigenereUseCase.addCharacterByKey("Y", "C")).toBe("A");
     });
   });
 
   describe("subtractCharacterByKey method", () => {
-    it("should return y", () => {
+    it("should return z", () => {
       expect(standardVigenereUseCase.subtractCharacterByKey("a", "b")).toBe(
-        "y"
+        "z"
       );
     });
 
-    it("should return V", () => {
+    it("should return W", () => {
       expect(standardVigenereUseCase.subtractCharacterByKey("Y", "C")).toBe(
-        "V"
+        "W"
       );
     });
   });
@@ -54,18 +54,33 @@ describe("Standard Vigenere Use Case", () => {
           plainText: "thisplaintext",
           key: "sony",
         })
-      );
+      ).toBe("LVVQHZNGFHRVL");
     });
   });
 
   describe("decrypt method", () => {
     it("should return THISPLAINTEXT", () => {
       expect(
-        standardVigenereUseCase.encrypt({
-          plainText: "LVVQHZNGFHRVL",
+        standardVigenereUseCase.decrypt({
+          cipherText: "LVVQHZNGFHRVL",
           key: "sony",
         })
-      );
+      ).toBe("THISPLAINTEXT");
+    });
+  });
+});
+
+describe("Auto Key Vigenere Use Case", () => {
+  const autoKeyVigenereUseCase = new AutoKeyVigenereUseCase();
+
+  describe("generateAutoKey method", () => {
+    it("should return INDONEGARAPENGHASILMINYAKMENTAHDID", () => {
+      expect(
+        autoKeyVigenereUseCase.generateAutoKey(
+          "negarapenghasilminyakmentahdidunia",
+          "INDO"
+        )
+      ).toBe("INDONEGARAPENGHASILMINYAKMENTAHDID");
     });
   });
 });

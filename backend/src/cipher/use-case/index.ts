@@ -1,5 +1,7 @@
 import { modulo } from "../../util/modulo";
 import {
+  AutoKeyVigenereDecryptDto,
+  AutoKeyVigenereEncryptDto,
   StandardVigenereDecryptDto,
   StandardVigenereEncryptDto,
 } from "../input-dto";
@@ -34,7 +36,7 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
 
     for (let i = 0; i < cipherText.length; i++) {
       const decryptedKey = this.subtractCharacterByKey(
-        plainText[i],
+        cipherText[i],
         key[i % key.length]
       );
 
@@ -61,12 +63,10 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
       this.lowercaseAlphabets.indexOf(characterInLowercase);
 
     if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[
-        modulo(characterIndex + (keyIndex + 1), 26)
-      ];
+      return this.lowercaseAlphabets[modulo(characterIndex + keyIndex, 26)];
     }
 
-    return this.uppercaseAlphabets[modulo(characterIndex + (keyIndex + 1), 26)];
+    return this.uppercaseAlphabets[modulo(characterIndex + keyIndex, 26)];
   };
 
   public subtractCharacterByKey = (character: string, key: string): string => {
@@ -78,11 +78,47 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
       this.lowercaseAlphabets.indexOf(characterInLowercase);
 
     if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[
-        modulo(characterIndex - (keyIndex + 1), 26)
-      ];
+      return this.lowercaseAlphabets[modulo(characterIndex - keyIndex, 26)];
     }
 
-    return this.uppercaseAlphabets[modulo(characterIndex - (keyIndex + 1), 26)];
+    return this.uppercaseAlphabets[modulo(characterIndex - keyIndex, 26)];
+  };
+}
+
+export class AutoKeyVigenereUseCase {
+  private standardVigenereUseCase: StandardVigenereUseCase;
+
+  constructor() {
+    this.standardVigenereUseCase = new StandardVigenereUseCase();
+  }
+
+  public encrypt = ({ plainText, key }: AutoKeyVigenereEncryptDto) => {
+    return this.standardVigenereUseCase.encrypt({
+      plainText,
+      key: this.generateAutoKey(plainText, key),
+    });
+  };
+
+  public descrypt = ({ cipherText, key }: AutoKeyVigenereDecryptDto) => {
+    return this.standardVigenereUseCase.decrypt({
+      cipherText,
+      key: this.generateAutoKey(cipherText, key),
+    });
+  };
+
+  public generateAutoKey = (text: string, key: string) => {
+    const newKey = [];
+
+    for (const char of key) {
+      newKey.push(char);
+    }
+
+    let i = 0;
+    while (newKey.length < text.length) {
+      newKey.push(text[i]);
+      i++;
+    }
+
+    return newKey.join("").toUpperCase();
   };
 }
