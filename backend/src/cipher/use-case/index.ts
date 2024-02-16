@@ -14,11 +14,33 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
   }
 
   public encrypt = ({ plainText, key }: StandardVigenereEncryptDto) => {
-    return "";
+    const cipherText: string[] = [];
+
+    for (let i = 0; i < plainText.length; i++) {
+      const encryptedText = this.addCharacterByKey(
+        plainText[i],
+        key[i % key.length]
+      );
+
+      cipherText.push(encryptedText);
+    }
+
+    return cipherText.join("").toUpperCase();
   };
 
   public decrypt = ({ cipherText, key }: StandardVigenereDecryptDto) => {
-    return "";
+    const plainText: string[] = [];
+
+    for (let i = 0; i < cipherText.length; i++) {
+      const decryptedKey = this.subtractCharacterByKey(
+        plainText[i],
+        key[i % key.length]
+      );
+
+      plainText.push(decryptedKey);
+    }
+
+    return plainText.join("").toUpperCase();
   };
 
   public isLowercaseAlphabet = (character: string): boolean => {
@@ -42,5 +64,20 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
     }
 
     return this.uppercaseAlphabets[(characterIndex + (keyIndex + 1)) % 26];
+  };
+
+  public subtractCharacterByKey = (character: string, key: string): string => {
+    const keyInLowercase = key.toLowerCase();
+    const keyIndex = this.lowercaseAlphabets.indexOf(keyInLowercase);
+
+    const characterInLowercase = character.toLowerCase();
+    const characterIndex =
+      this.lowercaseAlphabets.indexOf(characterInLowercase);
+
+    if (this.isLowercaseAlphabet(character)) {
+      return this.lowercaseAlphabets[(characterIndex - (keyIndex + 1)) % 26];
+    }
+
+    return this.uppercaseAlphabets[(characterIndex - (keyIndex + 1)) % 26];
   };
 }

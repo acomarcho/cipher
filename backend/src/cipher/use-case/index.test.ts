@@ -32,4 +32,26 @@ describe("Standard Vigenere Use Case", () => {
       expect(standardVigenereUseCase.addCharacterByKey("Y", "C")).toBe("B");
     });
   });
+
+  describe("encrypt method", () => {
+    it("should return LVVQHZNGFHRVL", () => {
+      expect(
+        standardVigenereUseCase.encrypt({
+          plainText: "thisplaintext",
+          key: "sony",
+        })
+      );
+    });
+  });
+
+  describe("decrypt method", () => {
+    it("should return THISPLAINTEXT", () => {
+      expect(
+        standardVigenereUseCase.encrypt({
+          plainText: "LVVQHZNGFHRVL",
+          key: "sony",
+        })
+      );
+    });
+  });
 });
