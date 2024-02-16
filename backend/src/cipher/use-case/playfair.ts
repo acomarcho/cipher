@@ -46,4 +46,25 @@ export class PlayfairUseCase implements PlayfairIOBoundary {
 
     return matrix;
   };
+
+  public generateBigramsFromText = (text: string) => {
+    const bigrams: string[] = [];
+    const textWithoutJ = text.toUpperCase().replace(/J/g, "I");
+
+    for (let i = 0; i < textWithoutJ.length; i += 2) {
+      const isLastCharacterWhenLengthIsOdd = i == textWithoutJ.length - 1;
+      if (isLastCharacterWhenLengthIsOdd) {
+        bigrams.push(text[i] + "X");
+      } else {
+        if (text[i] === text[i + 1]) {
+          bigrams.push(text[i] + "X");
+          i -= 1; // Shift i by one to accommodate the next + 2
+        } else {
+          bigrams.push(text[i] + text[i + 1]);
+        }
+      }
+    }
+
+    return bigrams;
+  };
 }

@@ -16,4 +16,23 @@ describe("Playfair Use Case", () => {
       ]);
     });
   });
+
+  describe("generateBigramsFromText method", () => {
+    it("should return the correct bigrams", () => {
+      expect(
+        playfairUseCase.generateBigramsFromText("TEMUIIBUNANTIMALAM")
+      ).toStrictEqual([
+        "TE",
+        "MU",
+        "IX",
+        "IB",
+        "UN",
+        "AN",
+        "TI",
+        "MA",
+        "LA",
+        "MX",
+      ]);
+    });
+  });
 });
