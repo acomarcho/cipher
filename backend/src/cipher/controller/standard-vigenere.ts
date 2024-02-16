@@ -1,6 +1,6 @@
 import express from "express";
 import { StandardVigenereUseCase } from "../use-case/standard-vigenere";
-import { encryptRequestSchema } from "../request";
+import { textEncryptRequestSchema, textDecryptRequestSchema } from "../request";
 import status from "http-status";
 import { ApiResponse } from "../response";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
@@ -13,9 +13,9 @@ export class StandardVigenereController {
     this.standardVigenereUseCase = standardVigenereUseCase;
     this.router = express.Router();
 
-    this.router.put("/standard-vigenere/text", (req, res) => {
+    this.router.put("/standard-vigenere/encrypt/text", (req, res) => {
       try {
-        const parsedRequest = encryptRequestSchema.safeParse(req.body);
+        const parsedRequest = textEncryptRequestSchema.safeParse(req.body);
         if (!parsedRequest.success) {
           return res
             .status(status.BAD_REQUEST)
@@ -25,6 +25,29 @@ export class StandardVigenereController {
         const { text, key } = parsedRequest.data;
         const result = this.standardVigenereUseCase.encrypt({
           plainText: sanitizeInputAsAlphabetOnly(text),
+          key: sanitizeInputAsAlphabetOnly(key),
+        });
+
+        return res.status(status.OK).json(new ApiResponse(result, null));
+      } catch (error) {
+        return res
+          .status(status.INTERNAL_SERVER_ERROR)
+          .json(new ApiResponse(null, error));
+      }
+    });
+
+    this.router.put("/standard-vigenere/decrypt/text", (req, res) => {
+      try {
+        const parsedRequest = textDecryptRequestSchema.safeParse(req.body);
+        if (!parsedRequest.success) {
+          return res
+            .status(status.BAD_REQUEST)
+            .json(new ApiResponse(null, "Incomplete fields"));
+        }
+
+        const { text, key } = parsedRequest.data;
+        const result = this.standardVigenereUseCase.decrypt({
+          cipherText: sanitizeInputAsAlphabetOnly(text),
           key: sanitizeInputAsAlphabetOnly(key),
         });
 
