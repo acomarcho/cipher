@@ -1,0 +1,3 @@
+export const modulo = (n: number, m: number) => {
+  return ((n % m) + m) % m;
+};

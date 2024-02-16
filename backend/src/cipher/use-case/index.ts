@@ -1,3 +1,4 @@
+import { modulo } from "../../util/modulo";
 import {
   StandardVigenereDecryptDto,
   StandardVigenereEncryptDto,
@@ -60,10 +61,12 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
       this.lowercaseAlphabets.indexOf(characterInLowercase);
 
     if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[(characterIndex + (keyIndex + 1)) % 26];
+      return this.lowercaseAlphabets[
+        modulo(characterIndex + (keyIndex + 1), 26)
+      ];
     }
 
-    return this.uppercaseAlphabets[(characterIndex + (keyIndex + 1)) % 26];
+    return this.uppercaseAlphabets[modulo(characterIndex + (keyIndex + 1), 26)];
   };
 
   public subtractCharacterByKey = (character: string, key: string): string => {
@@ -75,9 +78,11 @@ export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
       this.lowercaseAlphabets.indexOf(characterInLowercase);
 
     if (this.isLowercaseAlphabet(character)) {
-      return this.lowercaseAlphabets[(characterIndex - (keyIndex + 1)) % 26];
+      return this.lowercaseAlphabets[
+        modulo(characterIndex - (keyIndex + 1), 26)
+      ];
     }
 
-    return this.uppercaseAlphabets[(characterIndex - (keyIndex + 1)) % 26];
+    return this.uppercaseAlphabets[modulo(characterIndex - (keyIndex + 1), 26)];
   };
 }

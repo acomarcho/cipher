@@ -33,6 +33,20 @@ describe("Standard Vigenere Use Case", () => {
     });
   });
 
+  describe("subtractCharacterByKey method", () => {
+    it("should return y", () => {
+      expect(standardVigenereUseCase.subtractCharacterByKey("a", "b")).toBe(
+        "y"
+      );
+    });
+
+    it("should return V", () => {
+      expect(standardVigenereUseCase.subtractCharacterByKey("Y", "C")).toBe(
+        "V"
+      );
+    });
+  });
+
   describe("encrypt method", () => {
     it("should return LVVQHZNGFHRVL", () => {
       expect(
