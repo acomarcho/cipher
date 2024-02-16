@@ -95,18 +95,18 @@ export class AutoKeyVigenereUseCase {
   public encrypt = ({ plainText, key }: AutoKeyVigenereEncryptDto) => {
     return this.standardVigenereUseCase.encrypt({
       plainText,
-      key: this.generateAutoKey(plainText, key),
+      key: this.generateAutoKeyForEncryption(plainText, key),
     });
   };
 
-  public descrypt = ({ cipherText, key }: AutoKeyVigenereDecryptDto) => {
+  public decrypt = ({ cipherText, key }: AutoKeyVigenereDecryptDto) => {
     return this.standardVigenereUseCase.decrypt({
       cipherText,
-      key: this.generateAutoKey(cipherText, key),
+      key: this.generateAutoKeyForDecryption(cipherText, key),
     });
   };
 
-  public generateAutoKey = (text: string, key: string) => {
+  public generateAutoKeyForEncryption = (text: string, key: string) => {
     const newKey = [];
 
     for (const char of key) {
@@ -116,6 +116,24 @@ export class AutoKeyVigenereUseCase {
     let i = 0;
     while (newKey.length < text.length) {
       newKey.push(text[i]);
+      i++;
+    }
+
+    return newKey.join("").toUpperCase();
+  };
+
+  public generateAutoKeyForDecryption = (text: string, key: string) => {
+    const newKey = [];
+
+    for (const char of key) {
+      newKey.push(char);
+    }
+
+    let i = 0;
+    while (newKey.length < text.length) {
+      newKey.push(
+        this.standardVigenereUseCase.subtractCharacterByKey(text[i], newKey[i])
+      );
       i++;
     }
 
