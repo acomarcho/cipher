@@ -14,20 +14,26 @@ export class StandardVigenereController {
     this.router = express.Router();
 
     this.router.put("/standard-vigenere/text", (req, res) => {
-      const parsedRequest = encryptRequestSchema.safeParse(req.body);
-      if (!parsedRequest.success) {
+      try {
+        const parsedRequest = encryptRequestSchema.safeParse(req.body);
+        if (!parsedRequest.success) {
+          return res
+            .status(status.BAD_REQUEST)
+            .json(new ApiResponse(null, "Incomplete fields"));
+        }
+
+        const { text, key } = parsedRequest.data;
+        const result = this.standardVigenereUseCase.encrypt({
+          plainText: sanitizeInputAsAlphabetOnly(text),
+          key: sanitizeInputAsAlphabetOnly(key),
+        });
+
+        return res.status(status.OK).json(new ApiResponse(result, null));
+      } catch (error) {
         return res
-          .status(status.BAD_REQUEST)
-          .json(new ApiResponse(null, "Incomplete fields"));
+          .status(status.INTERNAL_SERVER_ERROR)
+          .json(new ApiResponse(null, error));
       }
-
-      const { text, key } = parsedRequest.data;
-      const result = this.standardVigenereUseCase.encrypt({
-        plainText: sanitizeInputAsAlphabetOnly(text),
-        key: sanitizeInputAsAlphabetOnly(key),
-      });
-
-      return res.status(status.OK).json(new ApiResponse(result, null));
     });
   }
 
