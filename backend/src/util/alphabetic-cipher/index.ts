@@ -27,3 +27,19 @@ export const subtractCharacterByKey = (
 
   return String.fromCharCode(newNumber);
 };
+
+export const affineEncrypt = (
+  character: string,
+  key: {
+    m: number;
+    b: number;
+  }
+): string => {
+  const characterNumber = character.charCodeAt(0) - MINIMUM_ORDINAL_NUMBER;
+
+  const newNumber =
+    modulo(key.m * characterNumber + key.b, ALPHABET_COUNT) +
+    MINIMUM_ORDINAL_NUMBER;
+
+  return String.fromCharCode(newNumber);
+};

@@ -1,4 +1,4 @@
-import { addCharacterByKey, subtractCharacterByKey } from ".";
+import { addCharacterByKey, affineEncrypt, subtractCharacterByKey } from ".";
 
 describe("addCharacterByKey fnuction", () => {
   it("should return D", () => {
@@ -17,5 +17,15 @@ describe("subtractCharacterByKey fnuction", () => {
 
   it("should return Y", () => {
     expect(subtractCharacterByKey("A", "C")).toBe("Y");
+  });
+});
+
+describe("affineEncrypt fnuction", () => {
+  it("should return C", () => {
+    expect(affineEncrypt("K", { m: 7, b: 10 })).toBe("C");
+  });
+
+  it("should return Z", () => {
+    expect(affineEncrypt("R", { m: 7, b: 10 })).toBe("Z");
   });
 });

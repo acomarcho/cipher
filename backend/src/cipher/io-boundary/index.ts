@@ -33,6 +33,6 @@ export interface PlayfairIOBoundary {
 }
 
 export interface AffineIOBoundary {
-  encrypt: (inputDto: AffineEncryptDto) => CipherResult;
-  decrypt: (inputDto: AffineDecryptDto) => CipherResult;
+  encrypt: (inputDto: AffineEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: AffineDecryptDto) => CipherResultWithText;
 }

@@ -7,6 +7,21 @@ export type StandardVigenereDecryptDto = {
   key: string;
 };
 
+export type AffineEncryptDto = {
+  plainText: string;
+  key: {
+    m: number;
+    b: number;
+  };
+};
+export type AffineDecryptDto = {
+  cipherText: string;
+  key: {
+    m: number;
+    b: number;
+  };
+};
+
 export type AutoKeyVigenereEncryptDto = StandardVigenereEncryptDto;
 export type AutoKeyVigenereDecryptDto = StandardVigenereDecryptDto;
 
@@ -15,6 +30,3 @@ export type ExtendedVigenereDecryptDto = StandardVigenereDecryptDto;
 
 export type PlayfairEncryptDto = StandardVigenereEncryptDto;
 export type PlayfairDecryptDto = StandardVigenereDecryptDto;
-
-export type AffineEncryptDto = StandardVigenereEncryptDto;
-export type AffineDecryptDto = StandardVigenereDecryptDto;
