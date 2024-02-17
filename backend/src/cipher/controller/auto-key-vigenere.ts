@@ -24,8 +24,8 @@ export class AutoKeyVigenereController {
 
         const { text, key } = parsedRequest.data;
         const result = this.autoKeyVigenereUseCase.encrypt({
-          plainText: sanitizeInputAsAlphabetOnly(text),
-          key: sanitizeInputAsAlphabetOnly(key),
+          plainText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
+          key: sanitizeInputAsAlphabetOnly(key).toUpperCase(),
         });
 
         return res.status(status.OK).json(new ApiResponse(result, null));
@@ -47,8 +47,8 @@ export class AutoKeyVigenereController {
 
         const { text, key } = parsedRequest.data;
         const result = this.autoKeyVigenereUseCase.decrypt({
-          cipherText: sanitizeInputAsAlphabetOnly(text),
-          key: sanitizeInputAsAlphabetOnly(key),
+          cipherText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
+          key: sanitizeInputAsAlphabetOnly(key).toUpperCase(),
         });
 
         return res.status(status.OK).json(new ApiResponse(result, null));

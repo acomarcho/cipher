@@ -1,19 +1,19 @@
 import express from "express";
-import { StandardVigenereUseCase } from "../use-case/standard-vigenere";
 import { textEncryptRequestSchema, textDecryptRequestSchema } from "../request";
 import status from "http-status";
 import { ApiResponse } from "../response";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
+import { PlayfairUseCase } from "../use-case/playfair";
 
-export class StandardVigenereController {
-  private standardVigenereUseCase;
+export class PlayfairController {
+  private playfairUseCase;
   private router;
 
-  constructor(standardVigenereUseCase: StandardVigenereUseCase) {
-    this.standardVigenereUseCase = standardVigenereUseCase;
+  constructor(playfairUseCase: PlayfairUseCase) {
+    this.playfairUseCase = playfairUseCase;
     this.router = express.Router();
 
-    this.router.put("/standard-vigenere/encrypt/text", (req, res) => {
+    this.router.put("/playfair/encrypt/text", (req, res) => {
       try {
         const parsedRequest = textEncryptRequestSchema.safeParse(req.body);
         if (!parsedRequest.success) {
@@ -23,7 +23,7 @@ export class StandardVigenereController {
         }
 
         const { text, key } = parsedRequest.data;
-        const result = this.standardVigenereUseCase.encrypt({
+        const result = this.playfairUseCase.encrypt({
           plainText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: sanitizeInputAsAlphabetOnly(key).toUpperCase(),
         });
@@ -36,7 +36,7 @@ export class StandardVigenereController {
       }
     });
 
-    this.router.put("/standard-vigenere/decrypt/text", (req, res) => {
+    this.router.put("/playfair/decrypt/text", (req, res) => {
       try {
         const parsedRequest = textDecryptRequestSchema.safeParse(req.body);
         if (!parsedRequest.success) {
@@ -46,7 +46,7 @@ export class StandardVigenereController {
         }
 
         const { text, key } = parsedRequest.data;
-        const result = this.standardVigenereUseCase.decrypt({
+        const result = this.playfairUseCase.decrypt({
           cipherText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: sanitizeInputAsAlphabetOnly(key).toUpperCase(),
         });

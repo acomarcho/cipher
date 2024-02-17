@@ -121,6 +121,8 @@ export class PlayfairUseCase implements PlayfairIOBoundary {
       }
     }
 
+    console.log(matrix, hashMap);
+
     return {
       matrix,
       hashMap,
