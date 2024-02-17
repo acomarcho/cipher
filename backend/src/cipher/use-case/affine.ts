@@ -1,4 +1,4 @@
-import { affineEncrypt } from "../../util/alphabetic-cipher";
+import { affineDecrypt, affineEncrypt } from "../../util/alphabetic-cipher";
 import {
   AffineDecryptDto,
   AffineEncryptDto,
@@ -23,10 +23,16 @@ export class AffineUseCase implements AffineIOBoundary {
   };
 
   public decrypt = ({ cipherText, key }: AffineDecryptDto) => {
-    // TODO: Implement decrypt
+    const plainText: string[] = [];
+
+    for (const character of cipherText) {
+      plainText.push(affineDecrypt(character[0].toUpperCase(), key));
+    }
+
+    const result = plainText.join("");
     return {
-      text: "",
-      base64: "",
+      text: result,
+      base64: btoa(result),
     };
   };
 }

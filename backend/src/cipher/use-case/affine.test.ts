@@ -11,4 +11,13 @@ describe("AffineUseCase class", () => {
       ).toBe("CZOLNE");
     });
   });
+
+  describe("decrypt method", () => {
+    it("should return KRIPTO", () => {
+      expect(
+        affineUseCase.decrypt({ cipherText: "CZOLNE", key: { m: 7, b: 10 } })
+          .text
+      ).toBe("KRIPTO");
+    });
+  });
 });
