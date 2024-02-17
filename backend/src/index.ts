@@ -5,6 +5,8 @@ import { StandardVigenereUseCase } from "./cipher/use-case/standard-vigenere";
 import { StandardVigenereController } from "./cipher/controller/standard-vigenere";
 import { AutoKeyVigenereUseCase } from "./cipher/use-case/auto-key-vigenere";
 import { AutoKeyVigenereController } from "./cipher/controller/auto-key-vigenere";
+import { ExtendedVigenereController } from "./cipher/controller/extended-vigenere";
+import { ExtendedVigenereUseCase } from "./cipher/use-case/extended-vigenere";
 
 dotenv.config();
 
@@ -24,6 +26,12 @@ const autoKeyVigenereController = new AutoKeyVigenereController(
   autoKeyVigenereUseCase
 );
 app.use("/cipher", autoKeyVigenereController.getRouter());
+
+const extendedVigenereUseCase = new ExtendedVigenereUseCase();
+const extendedVigenereController = new ExtendedVigenereController(
+  extendedVigenereUseCase
+);
+app.use("/cipher", extendedVigenereController.getRouter());
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
