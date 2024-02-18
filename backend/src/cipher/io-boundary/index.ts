@@ -11,6 +11,8 @@ import {
   PlayfairEncryptDto,
   StandardVigenereDecryptDto,
   StandardVigenereEncryptDto,
+  TranspositionDecryptDto,
+  TranspositionEncryptDto,
 } from "../input-dto";
 import { CipherResult, CipherResultWithText } from "../output-dto";
 
@@ -42,4 +44,9 @@ export interface AffineIOBoundary {
 export interface HillIOBoundary {
   encrypt: (inputDto: HillEncryptDto) => CipherResultWithText;
   decrypt: (inputDto: HillDecryptDto) => CipherResultWithText;
+}
+
+export interface TranspositionIOBoundary {
+  encrypt: (inputDto: TranspositionEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: TranspositionDecryptDto) => CipherResultWithText;
 }

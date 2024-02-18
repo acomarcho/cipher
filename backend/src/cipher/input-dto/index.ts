@@ -32,6 +32,15 @@ export type HillDecryptDto = {
   key: number[][];
 };
 
+export type TranspositionEncryptDto = {
+  plainText: string;
+  key: number;
+};
+export type TranspositionDecryptDto = {
+  cipherText: string;
+  key: number;
+};
+
 export type AutoKeyVigenereEncryptDto = StandardVigenereEncryptDto;
 export type AutoKeyVigenereDecryptDto = StandardVigenereDecryptDto;
 
