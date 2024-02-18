@@ -36,4 +36,15 @@ describe("TranspositionUseCase class", () => {
       ).toBe("DEKFIEMNOKPEIRAANKMIRTIATTENTB");
     });
   });
+
+  describe("decrypt method", () => {
+    it("should return the DEPARTEMENTEKNIKINFORMATIKAITB", () => {
+      expect(
+        transpositionUseCase.decrypt({
+          cipherText: "DEKFIEMNOKPEIRAANKMIRTIATTENTB",
+          key: 6,
+        }).text
+      ).toBe("DEPARTEMENTEKNIKINFORMATIKAITB");
+    });
+  });
 });

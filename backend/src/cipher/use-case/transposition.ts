@@ -20,9 +20,22 @@ export class TranspositionUseCase implements TranspositionIOBoundary {
   };
 
   public decrypt = ({ cipherText, key }: TranspositionDecryptDto) => {
+    const dividedStrings = this.divideStringByN(
+      cipherText,
+      cipherText.length / key
+    );
+    const transposedMatrix = this.transposeDividedStrings(dividedStrings);
+
+    let result = "";
+    transposedMatrix.forEach((row) => {
+      row.forEach((entry) => {
+        result += entry;
+      });
+    });
+
     return {
-      text: "",
-      base64: "",
+      text: result,
+      base64: btoa(result),
     };
   };
 
