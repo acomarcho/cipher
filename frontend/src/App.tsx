@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./components/ui/select";
+import { useState } from "react";
 
 enum Cipher {
   StandardVigenere = "standard-vigenere",
@@ -17,6 +18,18 @@ enum Cipher {
   Hill = "hill",
   Super = "super",
 }
+
+const isCipher = (v: string): v is Cipher => {
+  return (
+    v === Cipher.Affine ||
+    v === Cipher.AutoKeyVigenere ||
+    v === Cipher.ExtendedVigenere ||
+    v === Cipher.Hill ||
+    v === Cipher.Playfair ||
+    v === Cipher.StandardVigenere ||
+    v === Cipher.Super
+  );
+};
 
 const ciphers = [
   {
@@ -49,7 +62,26 @@ const ciphers = [
   },
 ];
 
+type CipherForm = {
+  cipher: Cipher;
+};
+
 const App = () => {
+  const [form, setForm] = useState<CipherForm>({
+    cipher: Cipher.StandardVigenere,
+  });
+
+  const handleCipherChange = (v: string) => {
+    if (!isCipher(v)) {
+      return;
+    }
+
+    setForm({
+      ...form,
+      cipher: v,
+    });
+  };
+
   return (
     <div className="max-w-[1160px] mx-auto p-[2rem]">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -63,7 +95,11 @@ const App = () => {
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Cipher
           </h3>
-          <Select defaultValue={Cipher.StandardVigenere}>
+          <Select
+            defaultValue={Cipher.StandardVigenere}
+            value={form.cipher}
+            onValueChange={handleCipherChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select a cipher" />
             </SelectTrigger>
