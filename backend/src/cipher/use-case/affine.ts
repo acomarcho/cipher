@@ -1,11 +1,9 @@
 import { affineDecrypt, affineEncrypt } from "../../util/alphabetic-cipher";
 import {
   AffineDecryptDto,
-  AffineEncryptDto,
-  PlayfairDecryptDto,
-  PlayfairEncryptDto,
+  AffineEncryptDto
 } from "../input-dto";
-import { AffineIOBoundary, PlayfairIOBoundary } from "../io-boundary";
+import { AffineIOBoundary } from "../io-boundary";
 
 export class AffineUseCase implements AffineIOBoundary {
   public encrypt = ({ plainText, key }: AffineEncryptDto) => {

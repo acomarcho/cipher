@@ -5,6 +5,8 @@ import {
   AutoKeyVigenereEncryptDto,
   ExtendedVigenereDecryptDto,
   ExtendedVigenereEncryptDto,
+  HillDecryptDto,
+  HillEncryptDto,
   PlayfairDecryptDto,
   PlayfairEncryptDto,
   StandardVigenereDecryptDto,
@@ -35,4 +37,9 @@ export interface PlayfairIOBoundary {
 export interface AffineIOBoundary {
   encrypt: (inputDto: AffineEncryptDto) => CipherResultWithText;
   decrypt: (inputDto: AffineDecryptDto) => CipherResultWithText;
+}
+
+export interface HillIOBoundary {
+  encrypt: (inputDto: HillEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: HillDecryptDto) => CipherResultWithText;
 }

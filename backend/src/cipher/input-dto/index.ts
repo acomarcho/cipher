@@ -22,6 +22,16 @@ export type AffineDecryptDto = {
   };
 };
 
+export type HillEncryptDto = {
+  plainText: string;
+  key: number[][];
+};
+
+export type HillDecryptDto = {
+  cipherText: string;
+  key: number[][];
+};
+
 export type AutoKeyVigenereEncryptDto = StandardVigenereEncryptDto;
 export type AutoKeyVigenereDecryptDto = StandardVigenereDecryptDto;
 
