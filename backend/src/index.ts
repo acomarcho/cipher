@@ -9,6 +9,8 @@ import { ExtendedVigenereController } from "./cipher/controller/extended-vigener
 import { ExtendedVigenereUseCase } from "./cipher/use-case/extended-vigenere";
 import { PlayfairController } from "./cipher/controller/playfair";
 import { PlayfairUseCase } from "./cipher/use-case/playfair";
+import { AffineController } from "./cipher/controller/affine";
+import { AffineUseCase } from "./cipher/use-case/affine";
 
 dotenv.config();
 
@@ -38,6 +40,10 @@ app.use("/cipher", extendedVigenereController.getRouter());
 const playfairUseCase = new PlayfairUseCase();
 const playfairController = new PlayfairController(playfairUseCase);
 app.use("/cipher", playfairController.getRouter());
+
+const affineUseCase = new AffineUseCase();
+const affineController = new AffineController(affineUseCase);
+app.use("/cipher", affineController.getRouter());
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

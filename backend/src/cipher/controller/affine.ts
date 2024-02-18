@@ -1,23 +1,21 @@
 import express from "express";
 import status from "http-status";
-import {
-  textDecryptRequestSchema,
-  textEncryptRequestSchema
-} from "../request";
+import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
+import { affineRequestSchema } from "../request";
 import { ApiResponse } from "../response";
-import { ExtendedVigenereUseCase } from "../use-case/extended-vigenere";
+import { AffineUseCase } from "../use-case/affine";
 
-export class ExtendedVigenereController {
-  private extendedVigenereUseCase;
+export class AffineController {
+  private affineUseCase;
   private router;
 
-  constructor(extendedVigenereUseCase: ExtendedVigenereUseCase) {
-    this.extendedVigenereUseCase = extendedVigenereUseCase;
+  constructor(affineUseCase: AffineUseCase) {
+    this.affineUseCase = affineUseCase;
     this.router = express.Router();
 
-    this.router.put("/extended-vigenere/encrypt/text", (req, res) => {
+    this.router.put("/affine/encrypt/text", (req, res) => {
       try {
-        const parsedRequest = textEncryptRequestSchema.safeParse(req.body);
+        const parsedRequest = affineRequestSchema.safeParse(req.body);
         if (!parsedRequest.success) {
           return res
             .status(status.BAD_REQUEST)
@@ -25,8 +23,8 @@ export class ExtendedVigenereController {
         }
 
         const { text, key } = parsedRequest.data;
-        const result = this.extendedVigenereUseCase.encrypt({
-          plainText: text,
+        const result = this.affineUseCase.encrypt({
+          plainText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: key,
         });
 
@@ -38,9 +36,9 @@ export class ExtendedVigenereController {
       }
     });
 
-    this.router.put("/extended-vigenere/decrypt/text", (req, res) => {
+    this.router.put("/affine/decrypt/text", (req, res) => {
       try {
-        const parsedRequest = textDecryptRequestSchema.safeParse(req.body);
+        const parsedRequest = affineRequestSchema.safeParse(req.body);
         if (!parsedRequest.success) {
           return res
             .status(status.BAD_REQUEST)
@@ -48,8 +46,8 @@ export class ExtendedVigenereController {
         }
 
         const { text, key } = parsedRequest.data;
-        const result = this.extendedVigenereUseCase.decrypt({
-          cipherText: text,
+        const result = this.affineUseCase.decrypt({
+          cipherText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: key,
         });
 
