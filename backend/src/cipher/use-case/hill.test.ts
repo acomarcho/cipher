@@ -22,4 +22,12 @@ describe("HillUseCase class", () => {
       ).toStrictEqual(["PAY", "MOR", "EMO", "NEY", "ZZX"]);
     });
   });
+
+  describe("convertNGramsToArray", () => {
+    it("should return [15, 0, 24]", () => {
+      expect(hillUseCase.convertNGramsToArray("PAY")).toStrictEqual([
+        15, 0, 24,
+      ]);
+    });
+  });
 });

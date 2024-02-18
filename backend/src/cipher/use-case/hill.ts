@@ -45,4 +45,10 @@ export class HillUseCase implements HillIOBoundary {
 
     return nGrams;
   };
+
+  public convertNGramsToArray = (nGrams: string) => {
+    return Array.from(nGrams).map(
+      (character) => character.charCodeAt(0) - "A".charCodeAt(0)
+    );
+  };
 }
