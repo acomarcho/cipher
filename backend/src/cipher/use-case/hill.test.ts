@@ -23,11 +23,26 @@ describe("HillUseCase class", () => {
     });
   });
 
-  describe("convertNGramsToArray", () => {
+  describe("convertNGramsToArray method", () => {
     it("should return [15, 0, 24]", () => {
       expect(hillUseCase.convertNGramsToArray("PAY")).toStrictEqual([
         15, 0, 24,
       ]);
+    });
+  });
+
+  describe("encrypt method", () => {
+    it("should return LNSHDLEWMTRW", () => {
+      expect(
+        hillUseCase.encrypt({
+          plainText: "PAYMOREMONEY",
+          key: [
+            [17, 17, 5],
+            [21, 18, 21],
+            [2, 2, 19],
+          ],
+        }).text
+      ).toStrictEqual("LNSHDLEWMTRW");
     });
   });
 });

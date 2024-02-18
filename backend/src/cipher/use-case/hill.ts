@@ -1,11 +1,31 @@
+import { modulo } from "../../util/modulo";
 import { HillDecryptDto, HillEncryptDto } from "../input-dto";
 import { HillIOBoundary } from "../io-boundary";
+import { multiply } from "mathjs";
 
 export class HillUseCase implements HillIOBoundary {
   public encrypt = ({ plainText, key }: HillEncryptDto) => {
+    const resultStrings: string[] = [];
+
+    const nGrams = this.generateNGramsFromText(plainText, key[0].length);
+    nGrams.forEach((nGram) => {
+      let resultMatrix = multiply(key, this.convertNGramsToArray(nGram));
+      resultMatrix = resultMatrix.map((ordinalNumber) => {
+        return modulo(ordinalNumber, 26) + "A".charCodeAt(0);
+      });
+
+      const resultString: string[] = [];
+      resultMatrix.forEach((ordinalNumber) => {
+        resultString.push(String.fromCharCode(ordinalNumber));
+      });
+
+      resultStrings.push(resultString.join(""));
+    });
+
+    const result = resultStrings.join("");
     return {
-      text: "",
-      base64: "",
+      text: result,
+      base64: btoa(result),
     };
   };
 
