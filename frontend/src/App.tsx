@@ -8,6 +8,47 @@ import {
   SelectValue,
 } from "./components/ui/select";
 
+enum Cipher {
+  StandardVigenere = "standard-vigenere",
+  AutoKeyVigenere = "auto-key-vigenere",
+  ExtendedVigenere = "extended-vigenere",
+  Playfair = "playfair",
+  Affine = "affine",
+  Hill = "hill",
+  Super = "super",
+}
+
+const ciphers = [
+  {
+    id: Cipher.StandardVigenere,
+    label: "Standard Vigenere Cipher",
+  },
+  {
+    id: Cipher.AutoKeyVigenere,
+    label: "Auto-Key Vigenere Cipher",
+  },
+  {
+    id: Cipher.ExtendedVigenere,
+    label: "Extended Vigenere Cipher",
+  },
+  {
+    id: Cipher.Playfair,
+    label: "Playfair Cipher",
+  },
+  {
+    id: Cipher.Affine,
+    label: "Affine Cipher",
+  },
+  {
+    id: Cipher.Hill,
+    label: "Hill Cipher",
+  },
+  {
+    id: Cipher.Super,
+    label: "Super Cipher",
+  },
+];
+
 const App = () => {
   return (
     <div className="max-w-[1160px] mx-auto p-[2rem]">
@@ -22,20 +63,18 @@ const App = () => {
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Cipher
           </h3>
-          <Select defaultValue="standard-vigenere">
+          <Select defaultValue={Cipher.StandardVigenere}>
             <SelectTrigger>
               <SelectValue placeholder="Select a cipher" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="standard-vigenere">
-                Standard Vigenere Cipher
-              </SelectItem>
-              <SelectItem value="auto-key-vigenere">
-                Auto-Key Vigenere Cipher
-              </SelectItem>
-              <SelectItem value="extended-vigenere">
-                Extended Vigenere Cipher
-              </SelectItem>
+              {ciphers.map((cipher) => {
+                return (
+                  <SelectItem value={cipher.id} key={cipher.id}>
+                    {cipher.label}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
