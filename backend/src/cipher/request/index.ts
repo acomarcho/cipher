@@ -21,3 +21,11 @@ export const hillRequestSchema = z.object({
   text: z.string(),
   key: z.array(z.array(z.number())),
 });
+
+export const superRequestSchema = z.object({
+  text: z.string(),
+  key: z.object({
+    vigenere: z.string(),
+    transposition: z.number(),
+  }),
+});

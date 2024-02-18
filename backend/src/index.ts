@@ -13,6 +13,8 @@ import { AffineController } from "./cipher/controller/affine";
 import { AffineUseCase } from "./cipher/use-case/affine";
 import { HillUseCase } from "./cipher/use-case/hill";
 import { HillController } from "./cipher/controller/hill";
+import { SuperController } from "./cipher/controller/super";
+import { SuperUseCase } from "./cipher/use-case/super";
 
 dotenv.config();
 
@@ -50,6 +52,10 @@ app.use("/cipher", affineController.getRouter());
 const hillUseCase = new HillUseCase();
 const hillController = new HillController(hillUseCase);
 app.use("/cipher", hillController.getRouter());
+
+const superUseCase = new SuperUseCase();
+const superController = new SuperController(superUseCase);
+app.use("/cipher", superController.getRouter());
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
