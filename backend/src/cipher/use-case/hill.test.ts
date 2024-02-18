@@ -42,7 +42,22 @@ describe("HillUseCase class", () => {
             [2, 2, 19],
           ],
         }).text
-      ).toStrictEqual("LNSHDLEWMTRW");
+      ).toBe("LNSHDLEWMTRW");
+    });
+  });
+
+  describe("decrypt method", () => {
+    it("should return PAYMOREMONEY", () => {
+      expect(
+        hillUseCase.decrypt({
+          cipherText: "LNSHDLEWMTRW",
+          key: [
+            [17, 17, 5],
+            [21, 18, 21],
+            [2, 2, 19],
+          ],
+        }).text
+      ).toBe("PAYMOREMONEY");
     });
   });
 });

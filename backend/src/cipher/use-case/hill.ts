@@ -1,9 +1,12 @@
-import { modulo } from "../../util/modulo";
+import { adjoint } from "../../util/matrix/matrix";
+import { modulo, moduloInverse } from "../../util/modulo";
 import { HillDecryptDto, HillEncryptDto } from "../input-dto";
 import { HillIOBoundary } from "../io-boundary";
-import { multiply } from "mathjs";
+import { multiply, inv, det } from "mathjs";
 
 export class HillUseCase implements HillIOBoundary {
+  private ALPHABET_LENGTH = 26;
+
   public encrypt = ({ plainText, key }: HillEncryptDto) => {
     const resultStrings: string[] = [];
 
@@ -30,9 +33,40 @@ export class HillUseCase implements HillIOBoundary {
   };
 
   public decrypt = ({ cipherText, key }: HillDecryptDto) => {
+    const resultStrings: string[] = [];
+
+    const determinant = det(key);
+    const adjointMatrix = adjoint(key);
+
+    const inverseKey = adjointMatrix.map((row) =>
+      row.map((entry) => {
+        const valueToModulo: number =
+          moduloInverse(determinant, this.ALPHABET_LENGTH) *
+          modulo(entry, this.ALPHABET_LENGTH);
+
+        return modulo(valueToModulo, 26);
+      })
+    );
+
+    const nGrams = this.generateNGramsFromText(cipherText, key[0].length);
+    nGrams.forEach((nGram) => {
+      let resultMatrix = multiply(inverseKey, this.convertNGramsToArray(nGram));
+      resultMatrix = resultMatrix.map((ordinalNumber) => {
+        return modulo(ordinalNumber, 26) + "A".charCodeAt(0);
+      });
+
+      const resultString: string[] = [];
+      resultMatrix.forEach((ordinalNumber) => {
+        resultString.push(String.fromCharCode(ordinalNumber));
+      });
+
+      resultStrings.push(resultString.join(""));
+    });
+
+    const result = resultStrings.join("");
     return {
-      text: "",
-      base64: "",
+      text: result,
+      base64: btoa(result),
     };
   };
 
