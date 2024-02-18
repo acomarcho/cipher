@@ -43,4 +43,27 @@ export class TranspositionUseCase implements TranspositionIOBoundary {
 
     return strings;
   };
+
+  public transposeDividedStrings = (dividedStrings: string[]) => {
+    const stringsInMatrixForm = dividedStrings.map((str) => Array.from(str));
+
+    function transpose(matrix: string[][]) {
+      const rows = matrix.length;
+      const cols = matrix[0].length;
+
+      const transposedMatrix = Array.from({ length: cols }, () =>
+        Array.from({ length: rows }, () => "")
+      );
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          transposedMatrix[i][j] = matrix[j][i];
+        }
+      }
+
+      return transposedMatrix;
+    }
+
+    return transpose(stringsInMatrixForm);
+  };
 }
