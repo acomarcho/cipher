@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "./components/ui/select";
 import { useState } from "react";
+import { Textarea } from "./components/ui/textarea";
 
 enum Cipher {
   StandardVigenere = "standard-vigenere",
@@ -93,15 +94,49 @@ const isSuperKey = (_key: CipherKey, cipher: Cipher): _key is SuperKey => {
   return cipher === Cipher.Super;
 };
 
+enum InputType {
+  Text = "text",
+  File = "file",
+}
+
+enum TextInputType {
+  Text = "text",
+  Base64 = "base64",
+}
+
 type CipherForm = {
   cipher: Cipher;
   key: CipherKey;
+  inputType: string;
+  textInputType: string;
+  textInput: string;
+};
+
+const safeBtoa = (v: string) => {
+  try {
+    const result = btoa(v);
+    return result;
+  } catch {
+    return "";
+  }
+};
+
+const safeAtob = (v: string) => {
+  try {
+    const result = atob(v);
+    return result;
+  } catch {
+    return "";
+  }
 };
 
 const App = () => {
   const [form, setForm] = useState<CipherForm>({
     cipher: Cipher.StandardVigenere,
     key: "",
+    inputType: InputType.Text,
+    textInputType: TextInputType.Text,
+    textInput: "",
   });
 
   const handleCipherChange = (v: string) => {
@@ -152,6 +187,28 @@ const App = () => {
       ...form,
       cipher: v,
       key: "",
+    });
+  };
+
+  const handleInputTypeChange = (v: string) => {
+    setForm({
+      ...form,
+      inputType: v,
+    });
+  };
+
+  const handleTextInputTypeChange = (v: string) => {
+    setForm({
+      ...form,
+      textInputType: v,
+      textInput: "",
+    });
+  };
+
+  const handleTextInputChange = (v: string) => {
+    setForm({
+      ...form,
+      textInput: v,
     });
   };
 
@@ -254,16 +311,81 @@ const App = () => {
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Input Type
           </h3>
-          <RadioGroup className="flex gap-[2rem]" defaultValue="text">
+          <RadioGroup
+            className="flex gap-[2rem]"
+            defaultValue={InputType.Text}
+            value={form.inputType}
+            onValueChange={handleInputTypeChange}
+          >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="text" id="text" />
-              <Label htmlFor="text">Text</Label>
+              <RadioGroupItem value={InputType.Text} id={InputType.Text} />
+              <Label htmlFor={InputType.Text}>Text</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="file" id="file" />
-              <Label htmlFor="file">File</Label>
+              <RadioGroupItem value={InputType.File} id={InputType.File} />
+              <Label htmlFor={InputType.File}>File</Label>
             </div>
           </RadioGroup>
+        </div>
+        <div className="flex flex-col gap-[1rem]">
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+            Input
+          </h3>
+          {form.inputType === InputType.Text && (
+            <>
+              <RadioGroup
+                className="flex gap-[2rem]"
+                defaultValue={TextInputType.Text}
+                value={form.textInputType}
+                onValueChange={handleTextInputTypeChange}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="text" id="text" />
+                  <Label htmlFor="text">Text</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="base64" id="base64" />
+                  <Label htmlFor="base64">Base 64</Label>
+                </div>
+              </RadioGroup>
+              <div className="flex gap-[2rem]">
+                <div className="space-y-[1rem] flex-1">
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                    Text
+                  </h4>
+                  <Textarea
+                    placeholder="Type text to encrypt/decrypt here ..."
+                    disabled={form.textInputType === TextInputType.Base64}
+                    value={
+                      form.textInputType === TextInputType.Text
+                        ? form.textInput
+                        : safeAtob(form.textInput)
+                    }
+                    onChange={(e) =>
+                      handleTextInputChange(e.currentTarget.value)
+                    }
+                  />
+                </div>
+                <div className="space-y-[1rem] flex-1">
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                    Base64
+                  </h4>
+                  <Textarea
+                    placeholder="Type base64 to encrypt/decrypt here ..."
+                    disabled={form.textInputType === TextInputType.Text}
+                    value={
+                      form.textInputType === TextInputType.Base64
+                        ? form.textInput
+                        : safeBtoa(form.textInput)
+                    }
+                    onChange={(e) =>
+                      handleTextInputChange(e.currentTarget.value)
+                    }
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
