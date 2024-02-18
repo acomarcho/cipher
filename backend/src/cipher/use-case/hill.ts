@@ -2,8 +2,11 @@ import { adjoint } from "../../util/matrix/matrix";
 import { modulo, moduloInverse } from "../../util/modulo";
 import { HillDecryptDto, HillEncryptDto } from "../input-dto";
 import { HillIOBoundary } from "../io-boundary";
-import { multiply, inv, det } from "mathjs";
+import { multiply, det } from "mathjs";
 
+/**
+ * Warning: This class can only perform when given texts with alphabet A-Z only.
+ */
 export class HillUseCase implements HillIOBoundary {
   private ALPHABET_LENGTH = 26;
 

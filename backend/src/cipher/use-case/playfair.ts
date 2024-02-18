@@ -2,6 +2,9 @@ import { modulo } from "../../util/modulo";
 import { PlayfairDecryptDto, PlayfairEncryptDto } from "../input-dto";
 import { PlayfairIOBoundary } from "../io-boundary";
 
+/**
+ * Warning: This class can only perform when given texts with alphabet A-Z only.
+ */
 export class PlayfairUseCase implements PlayfairIOBoundary {
   public encrypt = ({ plainText, key }: PlayfairEncryptDto) => {
     const { matrix, hashMap } = this.generateKeyMatrix(key);

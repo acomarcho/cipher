@@ -5,6 +5,9 @@ import {
 } from "../input-dto";
 import { AffineIOBoundary } from "../io-boundary";
 
+/**
+ * Warning: This class can only perform when given texts with alphabet A-Z only.
+ */
 export class AffineUseCase implements AffineIOBoundary {
   public encrypt = ({ plainText, key }: AffineEncryptDto) => {
     const cipherText: string[] = [];

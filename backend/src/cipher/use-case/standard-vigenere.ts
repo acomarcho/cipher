@@ -8,6 +8,9 @@ import {
 } from "../input-dto";
 import { StandardVigenereIOBoundary } from "../io-boundary";
 
+/**
+ * Warning: This class can only perform when given texts with alphabet A-Z only.
+ */
 export class StandardVigenereUseCase implements StandardVigenereIOBoundary {
   public encrypt = ({ plainText, key }: StandardVigenereEncryptDto) => {
     const cipherText: string[] = [];

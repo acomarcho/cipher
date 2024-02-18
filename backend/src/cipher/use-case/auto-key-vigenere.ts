@@ -6,6 +6,9 @@ import {
 import { AutoKeyVigenereIOBoundary } from "../io-boundary";
 import { StandardVigenereUseCase } from "./standard-vigenere";
 
+/**
+ * Warning: This class can only perform when given texts with alphabet A-Z only.
+ */
 export class AutoKeyVigenereUseCase implements AutoKeyVigenereIOBoundary {
   private standardVigenereUseCase: StandardVigenereUseCase;
 
