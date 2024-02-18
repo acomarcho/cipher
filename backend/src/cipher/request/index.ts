@@ -16,3 +16,8 @@ export const affineRequestSchema = z.object({
     b: z.number(),
   }),
 });
+
+export const hillRequestSchema = z.object({
+  text: z.string(),
+  key: z.array(z.array(z.number())),
+});
