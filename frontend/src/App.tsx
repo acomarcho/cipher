@@ -190,6 +190,13 @@ const App = () => {
     });
   };
 
+  const handleTextKeyChange = (v: string) => {
+    setForm({
+      ...form,
+      key: v,
+    });
+  };
+
   const handleInputTypeChange = (v: string) => {
     setForm({
       ...form,
@@ -253,6 +260,7 @@ const App = () => {
               type="text"
               placeholder="Enter cipher key ..."
               value={form.key}
+              onChange={(e) => handleTextKeyChange(e.currentTarget.value)}
             />
           )}
           {isAffineKey(form.key, form.cipher) && (
