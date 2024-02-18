@@ -3,9 +3,19 @@ import { TranspositionIOBoundary } from "../io-boundary";
 
 export class TranspositionUseCase implements TranspositionIOBoundary {
   public encrypt = ({ plainText, key }: TranspositionEncryptDto) => {
+    const dividedStrings = this.divideStringByN(plainText, key);
+    const transposedMatrix = this.transposeDividedStrings(dividedStrings);
+
+    let result = "";
+    transposedMatrix.forEach((row) => {
+      row.forEach((entry) => {
+        result += entry;
+      });
+    });
+
     return {
-      text: "",
-      base64: "",
+      text: result,
+      base64: btoa(result),
     };
   };
 

@@ -25,4 +25,15 @@ describe("TranspositionUseCase class", () => {
       ]);
     });
   });
+
+  describe("encrypt method", () => {
+    it("should return the DEKFIEMNOKPEIRAANKMIRTIATTENTB", () => {
+      expect(
+        transpositionUseCase.encrypt({
+          plainText: "DEPARTEMENTEKNIKINFORMATIKAITB",
+          key: 6,
+        }).text
+      ).toBe("DEKFIEMNOKPEIRAANKMIRTIATTENTB");
+    });
+  });
 });
