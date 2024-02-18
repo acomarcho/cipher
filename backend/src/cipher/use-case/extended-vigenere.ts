@@ -21,8 +21,10 @@ export class ExtendedVigenereUseCase implements ExtendedVigenereIOBoundary {
       cipherText.push(encryptedText);
     }
 
+    const result = cipherText.join("");
     return {
-      base64: btoa(cipherText.join("")),
+      text: result,
+      base64: btoa(result),
     };
   };
 
@@ -38,8 +40,10 @@ export class ExtendedVigenereUseCase implements ExtendedVigenereIOBoundary {
       plainText.push(decryptedKey);
     }
 
+    const result = plainText.join("");
     return {
-      base64: btoa(plainText.join("")),
+      text: result,
+      base64: btoa(result),
     };
   };
 }

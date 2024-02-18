@@ -11,10 +11,12 @@ import {
   PlayfairEncryptDto,
   StandardVigenereDecryptDto,
   StandardVigenereEncryptDto,
+  SuperDecryptDto,
+  SuperEncryptDto,
   TranspositionDecryptDto,
   TranspositionEncryptDto,
 } from "../input-dto";
-import { CipherResult, CipherResultWithText } from "../output-dto";
+import { CipherResultWithText } from "../output-dto";
 
 export interface StandardVigenereIOBoundary {
   encrypt: (inputDto: StandardVigenereEncryptDto) => CipherResultWithText;
@@ -27,8 +29,8 @@ export interface AutoKeyVigenereIOBoundary {
 }
 
 export interface ExtendedVigenereIOBoundary {
-  encrypt: (inputDto: ExtendedVigenereEncryptDto) => CipherResult;
-  decrypt: (inputDto: ExtendedVigenereDecryptDto) => CipherResult;
+  encrypt: (inputDto: ExtendedVigenereEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: ExtendedVigenereDecryptDto) => CipherResultWithText;
 }
 
 export interface PlayfairIOBoundary {
@@ -49,4 +51,9 @@ export interface HillIOBoundary {
 export interface TranspositionIOBoundary {
   encrypt: (inputDto: TranspositionEncryptDto) => CipherResultWithText;
   decrypt: (inputDto: TranspositionDecryptDto) => CipherResultWithText;
+}
+
+export interface SuperIOBoundary {
+  encrypt: (inputDto: SuperEncryptDto) => CipherResultWithText;
+  decrypt: (inputDto: SuperDecryptDto) => CipherResultWithText;
 }
