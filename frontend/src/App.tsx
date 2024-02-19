@@ -139,6 +139,13 @@ enum PageStatus {
   Loading = "LOADING",
 }
 
+type CipherResult = {
+  data: {
+    text: string;
+    base64: string;
+  };
+};
+
 const App = () => {
   const [form, setForm] = useState<CipherForm>({
     cipher: Cipher.StandardVigenere,
@@ -149,6 +156,8 @@ const App = () => {
   });
 
   const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.None);
+
+  const [cipherResult, setCipherResult] = useState<CipherResult | null>(null);
 
   const handleCipherChange = (v: string) => {
     if (!isCipher(v)) {
@@ -249,6 +258,7 @@ const App = () => {
 
   const handleEncryptClick = async () => {
     try {
+      setCipherResult(null);
       setPageStatus(PageStatus.Loading);
 
       const textToSend =
@@ -258,7 +268,7 @@ const App = () => {
 
       const key = isTextKey(form.key, form.cipher) ? form.key : "";
 
-      const { data } = await axios.put(
+      const { data } = await axios.put<CipherResult>(
         `${BE_URL}/cipher/${form.cipher}/encrypt/text`,
         {
           text: textToSend,
@@ -266,7 +276,7 @@ const App = () => {
         }
       );
 
-      console.log(data);
+      setCipherResult(data);
     } catch {
       window.alert("Failed to perform encryption");
     } finally {
@@ -463,6 +473,29 @@ const App = () => {
             Perform decryption {pageStatus === PageStatus.Loading && "..."}
           </Button>
         </div>
+        {cipherResult && (
+          <div className="flex flex-col gap-[1rem]">
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Output
+            </h3>
+            {form.inputType === InputType.Text && (
+              <div className="flex gap-[2rem]">
+                <div className="space-y-[1rem] flex-1">
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                    Text
+                  </h4>
+                  <Textarea value={cipherResult.data.text} />
+                </div>
+                <div className="space-y-[1rem] flex-1">
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                    Base64
+                  </h4>
+                  <Textarea value={cipherResult.data.base64} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
