@@ -211,9 +211,40 @@ const App = () => {
   };
 
   const handleTextKeyChange = (v: string) => {
+    if (!isTextKey(form.key, form.cipher)) {
+      return;
+    }
+
     setForm({
       ...form,
       key: v,
+    });
+  };
+
+  const handleAffineKeyMChange = (m: string) => {
+    if (!isAffineKey(form.key, form.cipher)) {
+      return;
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        m: m,
+      },
+    });
+  };
+  const handleAffineKeyBChange = (b: string) => {
+    if (!isAffineKey(form.key, form.cipher)) {
+      return;
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        b: b,
+      },
     });
   };
 
@@ -256,6 +287,17 @@ const App = () => {
     form.inputType === InputType.Text &&
     form.textInput !== "";
 
+  const generateRequestKey = () => {
+    return isTextKey(form.key, form.cipher)
+      ? form.key
+      : isAffineKey(form.key, form.cipher)
+      ? {
+          m: parseInt(form.key.m),
+          b: parseInt(form.key.b),
+        }
+      : "";
+  };
+
   const handleEncryptClick = async () => {
     try {
       setCipherResult(null);
@@ -266,7 +308,7 @@ const App = () => {
           ? form.textInput
           : safeAtob(form.textInput);
 
-      const key = isTextKey(form.key, form.cipher) ? form.key : "";
+      const key = generateRequestKey();
 
       const { data } = await axios.put<CipherResult>(
         `${BE_URL}/cipher/${form.cipher}/encrypt/text`,
@@ -294,7 +336,7 @@ const App = () => {
           ? form.textInput
           : safeAtob(form.textInput);
 
-      const key = isTextKey(form.key, form.cipher) ? form.key : "";
+      const key = generateRequestKey();
 
       const { data } = await axios.put<CipherResult>(
         `${BE_URL}/cipher/${form.cipher}/decrypt/text`,
@@ -366,6 +408,9 @@ const App = () => {
                   type="number"
                   placeholder="Enter value for m ..."
                   value={form.key.m}
+                  onChange={(e) =>
+                    handleAffineKeyMChange(e.currentTarget.value)
+                  }
                 />
               </div>
               <div className="flex flex-col gap-[1rem]">
@@ -376,6 +421,9 @@ const App = () => {
                   type="number"
                   placeholder="Enter value for b ..."
                   value={form.key.b}
+                  onChange={(e) => {
+                    handleAffineKeyBChange(e.currentTarget.value);
+                  }}
                 />
               </div>
             </>
