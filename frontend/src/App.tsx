@@ -11,6 +11,9 @@ import {
 import { useState } from "react";
 import { Textarea } from "./components/ui/textarea";
 import { Button } from "./components/ui/button";
+import axios from "axios";
+
+const BE_URL = "http://localhost:3000";
 
 enum Cipher {
   StandardVigenere = "standard-vigenere",
@@ -131,6 +134,11 @@ const safeAtob = (v: string) => {
   }
 };
 
+enum PageStatus {
+  None = "NONE",
+  Loading = "LOADING",
+}
+
 const App = () => {
   const [form, setForm] = useState<CipherForm>({
     cipher: Cipher.StandardVigenere,
@@ -139,6 +147,8 @@ const App = () => {
     textInputType: TextInputType.Text,
     textInput: "",
   });
+
+  const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.None);
 
   const handleCipherChange = (v: string) => {
     if (!isCipher(v)) {
@@ -236,6 +246,33 @@ const App = () => {
     isKeyCompleted &&
     form.inputType === InputType.Text &&
     form.textInput !== "";
+
+  const handleEncryptClick = async () => {
+    try {
+      setPageStatus(PageStatus.Loading);
+
+      const textToSend =
+        form.textInputType === TextInputType.Text
+          ? form.textInput
+          : safeAtob(form.textInput);
+
+      const key = isTextKey(form.key, form.cipher) ? form.key : "";
+
+      const { data } = await axios.put(
+        `${BE_URL}/${form.cipher}/encrypt/text`,
+        {
+          plainText: textToSend,
+          key,
+        }
+      );
+
+      console.log(data);
+    } catch {
+      window.alert("Failed to perform encryption");
+    } finally {
+      setPageStatus(PageStatus.None);
+    }
+  };
 
   return (
     <div className="max-w-[1160px] mx-auto p-[2rem]">
@@ -413,7 +450,19 @@ const App = () => {
             </>
           )}
         </div>
-        <Button disabled={!isFormComplete}>Perform encryption</Button>
+        <div className="flex gap-[1rem]">
+          <Button
+            disabled={!isFormComplete || pageStatus === PageStatus.Loading}
+            onClick={handleEncryptClick}
+          >
+            Perform encryption {pageStatus === PageStatus.Loading && "..."}
+          </Button>
+          <Button
+            disabled={!isFormComplete || pageStatus === PageStatus.Loading}
+          >
+            Perform decryption {pageStatus === PageStatus.Loading && "..."}
+          </Button>
+        </div>
       </div>
     </div>
   );
