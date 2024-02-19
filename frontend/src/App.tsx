@@ -118,7 +118,7 @@ const safeBtoa = (v: string) => {
     const result = btoa(v);
     return result;
   } catch {
-    return "";
+    return "Cannot convert to base64";
   }
 };
 
@@ -127,7 +127,7 @@ const safeAtob = (v: string) => {
     const result = atob(v);
     return result;
   } catch {
-    return "";
+    return "Invalid base64";
   }
 };
 
@@ -219,6 +219,23 @@ const App = () => {
       textInput: v,
     });
   };
+
+  const isKeyCompleted =
+    (isTextKey(form.key, form.cipher) && form.key !== "") ||
+    (isAffineKey(form.key, form.cipher) &&
+      form.key.m !== "" &&
+      form.key.b !== "") ||
+    (isHillKey(form.key, form.cipher) &&
+      form.key.filter((row) => row.filter((entry) => entry === "")).length !==
+        0) ||
+    (isSuperKey(form.key, form.cipher) &&
+      form.key.vigenere !== "" &&
+      form.key.transposition !== "");
+
+  const isFormComplete =
+    isKeyCompleted &&
+    form.inputType === InputType.Text &&
+    form.textInput !== "";
 
   return (
     <div className="max-w-[1160px] mx-auto p-[2rem]">
@@ -396,9 +413,7 @@ const App = () => {
             </>
           )}
         </div>
-        <Button>Perform encryption
-          
-        </Button>
+        <Button disabled={!isFormComplete}>Perform encryption</Button>
       </div>
     </div>
   );
