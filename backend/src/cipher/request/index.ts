@@ -29,3 +29,7 @@ export const superRequestSchema = z.object({
     transposition: z.number(),
   }),
 });
+
+export const fileTextRequestSchema = z.object({
+  key: z.string(),
+});
