@@ -33,3 +33,10 @@ export const superRequestSchema = z.object({
 export const fileTextRequestSchema = z.object({
   key: z.string(),
 });
+
+export const fileAffineRequestSchema = z.object({
+  key: z.object({
+    m: z.number(),
+    b: z.number(),
+  }),
+});
