@@ -44,3 +44,10 @@ export const fileAffineRequestSchema = z.object({
 export const fileHillRequestSchema = z.object({
   key: z.array(z.array(z.number())),
 });
+
+export const fileSuperRequestSchema = z.object({
+  key: z.object({
+    vigenere: z.string(),
+    transposition: z.number(),
+  }),
+});

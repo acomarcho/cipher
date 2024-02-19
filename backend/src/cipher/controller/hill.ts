@@ -1,17 +1,16 @@
 import express from "express";
+import fs from "fs/promises";
 import status from "http-status";
+import { det } from "mathjs";
+import multer from "multer";
+import stream from "stream";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
 import {
-  fileAffineRequestSchema,
   fileHillRequestSchema,
-  hillRequestSchema,
+  hillRequestSchema
 } from "../request";
 import { ApiResponse } from "../response";
 import { HillUseCase } from "../use-case/hill";
-import { det } from "mathjs";
-import fs from "fs/promises";
-import multer from "multer";
-import stream from "stream";
 const upload = multer({ dest: "uploads/" });
 
 export class HillController {

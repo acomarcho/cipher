@@ -1,24 +1,24 @@
 import {
-  CipherForm,
-  InputType,
-  TextInputType,
-  PageStatus,
-  CipherResult,
-  isCipher,
-  isTextKey,
-  isAffineKey,
-  isSuperKey,
-  isHillKey,
   BE_URL,
   Cipher,
+  CipherForm,
+  CipherResult,
   FileResult,
+  InputType,
+  PageStatus,
+  TextInputType,
+  isAffineKey,
+  isCipher,
+  isHillKey,
+  isSuperKey,
+  isTextKey,
 } from "@/lib/constants";
 import { downloadBufferAsFile, safeAtob } from "@/lib/utils";
 import { ExtFile } from "@files-ui/react";
 import axios from "axios";
+import { base64ToBytes } from "byte-base64";
 import { useState } from "react";
 import { toast } from "sonner";
-import { base64ToBytes } from "byte-base64";
 
 export const useCipherForm = () => {
   const [form, setForm] = useState<CipherForm>({
