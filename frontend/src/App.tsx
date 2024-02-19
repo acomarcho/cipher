@@ -393,6 +393,10 @@ const App = () => {
           vigenere: form.key.vigenere,
           transposition: parseInt(form.key.transposition),
         }
+      : isHillKey(form.key, form.cipher)
+      ? form.key.matrix.map((row) => {
+          return row.map((entry) => parseInt(entry));
+        })
       : "";
   };
 
