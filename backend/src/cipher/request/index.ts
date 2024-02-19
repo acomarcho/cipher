@@ -40,3 +40,7 @@ export const fileAffineRequestSchema = z.object({
     b: z.number(),
   }),
 });
+
+export const fileHillRequestSchema = z.object({
+  key: z.array(z.array(z.number())),
+});
