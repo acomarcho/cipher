@@ -320,7 +320,7 @@ export const useCipherForm = () => {
       setCipherResult(data);
       toast.success("Decryption done successfully!");
     } catch {
-      toast.error("Failed to perform decryption");
+      toast.error("Failed to perform decryption.");
     } finally {
       setPageStatus(PageStatus.None);
     }
