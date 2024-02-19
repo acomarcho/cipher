@@ -22,6 +22,7 @@ import {
   isTextKey,
 } from "./lib/constants";
 import { safeAtob, safeBtoa } from "./lib/utils";
+import { Dropzone, FileMosaic } from "@files-ui/react";
 
 const ciphers = [
   {
@@ -73,6 +74,9 @@ const App = () => {
     isFormComplete,
     handleEncryptClick,
     handleDecryptClick,
+    files,
+    updateFiles,
+    removeFile,
   } = useCipherForm();
 
   return (
@@ -306,6 +310,28 @@ const App = () => {
                 </div>
               </div>
             </>
+          )}
+          {form.inputType === InputType.File && (
+            <Dropzone
+              onChange={updateFiles}
+              value={files}
+              maxFiles={1}
+              accept={
+                form.cipher !== Cipher.ExtendedVigenere &&
+                form.cipher !== Cipher.Super
+                  ? ".txt"
+                  : "*"
+              }
+            >
+              {files.map((file) => (
+                <FileMosaic
+                  key={file.id}
+                  {...file}
+                  onDelete={removeFile}
+                  info
+                />
+              ))}
+            </Dropzone>
           )}
         </div>
         <div className="flex gap-[1rem]">

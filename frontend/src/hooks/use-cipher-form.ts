@@ -13,6 +13,7 @@ import {
   Cipher,
 } from "@/lib/constants";
 import { safeAtob } from "@/lib/utils";
+import { ExtFile } from "@files-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -25,6 +26,14 @@ export const useCipherForm = () => {
     textInputType: TextInputType.Text,
     textInput: "",
   });
+
+  const [files, setFiles] = useState<ExtFile[]>([]);
+  const updateFiles = (incomingFiles: ExtFile[]) => {
+    setFiles(incomingFiles);
+  };
+  const removeFile = (id: number | string | undefined) => {
+    setFiles(files.filter((x) => x.id !== id));
+  };
 
   const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.None);
 
@@ -80,6 +89,8 @@ export const useCipherForm = () => {
         });
       }
     }
+
+    setFiles([]);
   };
 
   const handleTextKeyChange = (v: string) => {
@@ -245,8 +256,8 @@ export const useCipherForm = () => {
 
   const isFormComplete =
     isKeyCompleted &&
-    form.inputType === InputType.Text &&
-    form.textInput !== "";
+    ((form.inputType === InputType.Text && form.textInput !== "") ||
+      (form.inputType === InputType.File && files.length > 0));
 
   const generateRequestKey = () => {
     return isTextKey(form.key, form.cipher)
@@ -273,22 +284,38 @@ export const useCipherForm = () => {
       setCipherResult(null);
       setPageStatus(PageStatus.Loading);
 
-      const textToSend =
-        form.textInputType === TextInputType.Text
-          ? form.textInput
-          : safeAtob(form.textInput);
-
       const key = generateRequestKey();
 
-      const { data } = await axios.put<CipherResult>(
-        `${BE_URL}/cipher/${form.cipher}/encrypt/text`,
-        {
-          text: textToSend,
-          key,
-        }
-      );
+      if (form.inputType === InputType.Text) {
+        const textToSend =
+          form.textInputType === TextInputType.Text
+            ? form.textInput
+            : safeAtob(form.textInput);
 
-      setCipherResult(data);
+        const { data } = await axios.put<CipherResult>(
+          `${BE_URL}/cipher/${form.cipher}/encrypt/text`,
+          {
+            text: textToSend,
+            key,
+          }
+        );
+        setCipherResult(data);
+      } else {
+        if (files.length === 0 || !files[0].file) {
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", files[0].file);
+        formData.append("key", JSON.stringify(key));
+
+        const { data } = await axios.put(
+          `${BE_URL}/cipher/${form.cipher}/encrypt/file`,
+          formData
+        );
+        console.log(data);
+      }
+
       toast.success("Encryption done successfully!");
     } catch {
       toast.error("Failed to perform encryption.");
@@ -344,5 +371,8 @@ export const useCipherForm = () => {
     isFormComplete,
     handleEncryptClick,
     handleDecryptClick,
+    files,
+    updateFiles,
+    removeFile,
   };
 };
