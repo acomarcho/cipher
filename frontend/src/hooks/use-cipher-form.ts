@@ -15,6 +15,7 @@ import {
 import { safeAtob } from "@/lib/utils";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const useCipherForm = () => {
   const [form, setForm] = useState<CipherForm>({
@@ -288,8 +289,9 @@ export const useCipherForm = () => {
       );
 
       setCipherResult(data);
+      toast.success("Encryption done successfully!");
     } catch {
-      window.alert("Failed to perform encryption");
+      toast.error("Failed to perform encryption.");
     } finally {
       setPageStatus(PageStatus.None);
     }
@@ -316,8 +318,9 @@ export const useCipherForm = () => {
       );
 
       setCipherResult(data);
+      toast.success("Decryption done successfully!");
     } catch {
-      window.alert("Failed to perform encryption");
+      toast.error("Failed to perform decryption");
     } finally {
       setPageStatus(PageStatus.None);
     }
