@@ -315,6 +315,7 @@ const App = () => {
           )}
           {form.inputType === InputType.File && (
             <Dropzone
+              behaviour="replace"
               onChange={updateFiles}
               value={files}
               maxFiles={1}
