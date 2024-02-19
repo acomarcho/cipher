@@ -248,6 +248,33 @@ const App = () => {
     });
   };
 
+  const handleSuperKeyVigenereChange = (vigenere: string) => {
+    if (!isSuperKey(form.key, form.cipher)) {
+      return;
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        vigenere: vigenere,
+      },
+    });
+  };
+  const handleSuperKeyTranspositionChange = (transposition: string) => {
+    if (!isSuperKey(form.key, form.cipher)) {
+      return;
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        transposition: transposition,
+      },
+    });
+  };
+
   const handleInputTypeChange = (v: string) => {
     setForm({
       ...form,
@@ -294,6 +321,11 @@ const App = () => {
       ? {
           m: parseInt(form.key.m),
           b: parseInt(form.key.b),
+        }
+      : isSuperKey(form.key, form.cipher)
+      ? {
+          vigenere: form.key.vigenere,
+          transposition: parseInt(form.key.transposition),
         }
       : "";
   };
@@ -438,9 +470,12 @@ const App = () => {
                   Vigenere key
                 </h4>
                 <Input
-                  type="number"
+                  type="text"
                   placeholder="Enter vigenere key ..."
                   value={form.key.vigenere}
+                  onChange={(e) =>
+                    handleSuperKeyVigenereChange(e.currentTarget.value)
+                  }
                 />
               </div>
               <div className="flex flex-col gap-[1rem]">
@@ -451,6 +486,9 @@ const App = () => {
                   type="number"
                   placeholder="Enter transposition key ..."
                   value={form.key.transposition}
+                  onChange={(e) =>
+                    handleSuperKeyTranspositionChange(e.currentTarget.value)
+                  }
                 />
               </div>
             </>
@@ -561,13 +599,13 @@ const App = () => {
                   <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
                     Text
                   </h4>
-                  <Textarea value={cipherResult.data.text} />
+                  <Textarea value={cipherResult.data.text} readOnly />
                 </div>
                 <div className="space-y-[1rem] flex-1">
                   <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
                     Base64
                   </h4>
-                  <Textarea value={cipherResult.data.base64} />
+                  <Textarea value={cipherResult.data.base64} readOnly />
                 </div>
               </div>
             )}
