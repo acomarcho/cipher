@@ -284,6 +284,34 @@ const App = () => {
     }
   };
 
+  const handleDecryptClick = async () => {
+    try {
+      setCipherResult(null);
+      setPageStatus(PageStatus.Loading);
+
+      const textToSend =
+        form.textInputType === TextInputType.Text
+          ? form.textInput
+          : safeAtob(form.textInput);
+
+      const key = isTextKey(form.key, form.cipher) ? form.key : "";
+
+      const { data } = await axios.put<CipherResult>(
+        `${BE_URL}/cipher/${form.cipher}/decrypt/text`,
+        {
+          text: textToSend,
+          key,
+        }
+      );
+
+      setCipherResult(data);
+    } catch {
+      window.alert("Failed to perform encryption");
+    } finally {
+      setPageStatus(PageStatus.None);
+    }
+  };
+
   return (
     <div className="max-w-[1160px] mx-auto p-[2rem]">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -469,6 +497,7 @@ const App = () => {
           </Button>
           <Button
             disabled={!isFormComplete || pageStatus === PageStatus.Loading}
+            onClick={handleDecryptClick}
           >
             Perform decryption {pageStatus === PageStatus.Loading && "..."}
           </Button>
