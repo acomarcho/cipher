@@ -20,7 +20,11 @@ import { SuperUseCase } from "./cipher/use-case/super";
 dotenv.config();
 
 const app: Express = express();
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: "Content-Disposition",
+  })
+);
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 

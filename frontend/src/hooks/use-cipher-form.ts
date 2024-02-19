@@ -11,8 +11,9 @@ import {
   isHillKey,
   BE_URL,
   Cipher,
+  FileResult,
 } from "@/lib/constants";
-import { safeAtob } from "@/lib/utils";
+import { downloadBufferAsFile, safeAtob } from "@/lib/utils";
 import { ExtFile } from "@files-ui/react";
 import axios from "axios";
 import { useState } from "react";
@@ -38,6 +39,7 @@ export const useCipherForm = () => {
   const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.None);
 
   const [cipherResult, setCipherResult] = useState<CipherResult | null>(null);
+  const [fileResult, setFileResult] = useState<FileResult | null>(null);
 
   const handleCipherChange = (v: string) => {
     if (!isCipher(v)) {
@@ -282,6 +284,7 @@ export const useCipherForm = () => {
   const handleEncryptClick = async () => {
     try {
       setCipherResult(null);
+      setFileResult(null);
       setPageStatus(PageStatus.Loading);
 
       const key = generateRequestKey();
@@ -309,15 +312,20 @@ export const useCipherForm = () => {
         formData.append("file", files[0].file);
         formData.append("key", JSON.stringify(key));
 
-        const { data } = await axios.put(
+        const response = await axios.put(
           `${BE_URL}/cipher/${form.cipher}/encrypt/file`,
           formData
         );
-        console.log(data);
+        setFileResult({
+          file: response.data,
+          fileName:
+            response.headers["content-disposition"].split("filename=")[1],
+        });
       }
 
       toast.success("Encryption done successfully!");
-    } catch {
+    } catch (error) {
+      console.log(error);
       toast.error("Failed to perform encryption.");
     } finally {
       setPageStatus(PageStatus.None);
@@ -353,6 +361,14 @@ export const useCipherForm = () => {
     }
   };
 
+  const handleDownloadClick = () => {
+    if (!fileResult) {
+      return;
+    }
+
+    downloadBufferAsFile(fileResult.file, fileResult.fileName);
+  };
+
   return {
     form,
     pageStatus,
@@ -374,5 +390,7 @@ export const useCipherForm = () => {
     files,
     updateFiles,
     removeFile,
+    fileResult,
+    handleDownloadClick,
   };
 };

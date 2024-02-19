@@ -10,6 +10,7 @@ import { ApiResponse } from "../response";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
 import fs from "fs/promises";
 import multer from "multer";
+import stream from "stream";
 const upload = multer({ dest: "uploads/" });
 
 export class StandardVigenereController {
@@ -72,14 +73,15 @@ export class StandardVigenereController {
           await fs.writeFile(req.file.path, result.text, "utf-8");
           const newFileContents = await fs.readFile(req.file.path);
 
-          return res
-            .status(status.OK)
-            .json(
-              new ApiResponse(
-                { file: newFileContents, fileName: req.file.originalname },
-                null
-              )
-            );
+          const readStream = new stream.PassThrough();
+          readStream.end(newFileContents);
+
+          res.set(
+            "Content-Disposition",
+            "attachment; filename=" + req.file.originalname
+          );
+          res.set("Content-Type", "text/plain");
+          return readStream.pipe(res);
         } catch (error) {
           return res
             .status(status.INTERNAL_SERVER_ERROR)

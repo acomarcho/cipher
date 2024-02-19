@@ -90,3 +90,8 @@ export type CipherResult = {
     base64: string;
   };
 };
+
+export type FileResult = {
+  file: Buffer;
+  fileName: string;
+};

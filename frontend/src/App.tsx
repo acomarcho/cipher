@@ -77,6 +77,8 @@ const App = () => {
     files,
     updateFiles,
     removeFile,
+    fileResult,
+    handleDownloadClick,
   } = useCipherForm();
 
   return (
@@ -368,6 +370,18 @@ const App = () => {
                   <Textarea value={cipherResult.data.base64} readOnly />
                 </div>
               </div>
+            )}
+          </div>
+        )}
+        {fileResult && (
+          <div className="flex flex-col gap-[1rem]">
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Output
+            </h3>
+            {form.inputType === InputType.File && (
+              <Button onClick={handleDownloadClick}>
+                Download result file
+              </Button>
             )}
           </div>
         )}
