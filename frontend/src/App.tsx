@@ -73,7 +73,10 @@ type AffineKey = {
   m: string;
   b: string;
 };
-type HillKey = string[][];
+type HillKey = {
+  matrixSize: string;
+  matrix: string[][];
+};
 type SuperKey = {
   vigenere: string;
   transposition: string;
@@ -180,7 +183,13 @@ const App = () => {
         setForm({
           ...form,
           cipher: v,
-          key: [],
+          key: {
+            matrixSize: "2",
+            matrix: [
+              ["", ""],
+              ["", ""],
+            ],
+          },
         });
         break;
       }
@@ -203,11 +212,6 @@ const App = () => {
         });
       }
     }
-    setForm({
-      ...form,
-      cipher: v,
-      key: "",
-    });
   };
 
   const handleTextKeyChange = (v: string) => {
@@ -275,6 +279,66 @@ const App = () => {
     });
   };
 
+  const handleHillKeyMatrixSizeChange = (size: string) => {
+    if (!isHillKey(form.key, form.cipher)) {
+      return;
+    }
+
+    if (parseInt(size) < 2) {
+      return;
+    }
+
+    const newMatrix: string[][] = [];
+    const newSize = parseInt(size);
+    for (let i = 0; i < newSize; i++) {
+      const newRow: string[] = [];
+      for (let j = 0; j < newSize; j++) {
+        newRow.push("");
+      }
+      newMatrix.push(newRow);
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        matrixSize: size,
+        matrix: newMatrix,
+      },
+    });
+  };
+  const handleHillKeyMatrixChange = (
+    row: number,
+    col: number,
+    value: string
+  ) => {
+    if (!isHillKey(form.key, form.cipher)) {
+      return;
+    }
+
+    const newMatrix: string[][] = [];
+    const size = parseInt(form.key.matrixSize);
+    for (let i = 0; i < size; i++) {
+      const newRow: string[] = [];
+      for (let j = 0; j < size; j++) {
+        if (i === row && j === col) {
+          newRow.push(value);
+        } else {
+          newRow.push(form.key.matrix[i][j]);
+        }
+      }
+      newMatrix.push(newRow);
+    }
+
+    setForm({
+      ...form,
+      key: {
+        ...form.key,
+        matrix: newMatrix,
+      },
+    });
+  };
+
   const handleInputTypeChange = (v: string) => {
     setForm({
       ...form,
@@ -303,8 +367,10 @@ const App = () => {
       form.key.m !== "" &&
       form.key.b !== "") ||
     (isHillKey(form.key, form.cipher) &&
-      form.key.filter((row) => row.filter((entry) => entry === "")).length !==
-        0) ||
+      form.key.matrix.filter((row) => {
+        const filteredRow = row.filter((entry) => entry === "");
+        return filteredRow.length > 0;
+      }).length === 0) ||
     (isSuperKey(form.key, form.cipher) &&
       form.key.vigenere !== "" &&
       form.key.transposition !== "");
@@ -461,7 +527,52 @@ const App = () => {
             </>
           )}
           {isHillKey(form.key, form.cipher) && (
-            <span>TODO - Implement Hill Key input</span>
+            <>
+              <div className="flex flex-col gap-[1rem]">
+                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                  Matrix size (minimum = 2)
+                </h4>
+                <Input
+                  type="number"
+                  placeholder="Enter value for m ..."
+                  value={form.key.matrixSize}
+                  onChange={(e) =>
+                    handleHillKeyMatrixSizeChange(e.currentTarget.value)
+                  }
+                  min={2}
+                />
+              </div>
+              {form.key.matrixSize && (
+                <div className="flex flex-col gap-[1rem]">
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                    Matrix
+                  </h4>
+                  {form.key.matrix.map((row, rowIndex) => {
+                    return (
+                      <div key={rowIndex} className="flex gap-[1rem]">
+                        {row.map((entry, entryIndex) => {
+                          return (
+                            <Input
+                              key={entryIndex}
+                              type="number"
+                              className="w-[100px]"
+                              value={entry}
+                              onChange={(e) => {
+                                handleHillKeyMatrixChange(
+                                  rowIndex,
+                                  entryIndex,
+                                  e.currentTarget.value
+                                );
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
           )}
           {isSuperKey(form.key, form.cipher) && (
             <>
