@@ -1,3 +1,6 @@
+import axios from "axios";
+import { useState } from "react";
+import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group";
@@ -8,34 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./components/ui/select";
-import { useState } from "react";
 import { Textarea } from "./components/ui/textarea";
-import { Button } from "./components/ui/button";
-import axios from "axios";
-
-const BE_URL = "http://localhost:3000";
-
-enum Cipher {
-  StandardVigenere = "standard-vigenere",
-  AutoKeyVigenere = "auto-key-vigenere",
-  ExtendedVigenere = "extended-vigenere",
-  Playfair = "playfair",
-  Affine = "affine",
-  Hill = "hill",
-  Super = "super",
-}
-
-const isCipher = (v: string): v is Cipher => {
-  return (
-    v === Cipher.Affine ||
-    v === Cipher.AutoKeyVigenere ||
-    v === Cipher.ExtendedVigenere ||
-    v === Cipher.Hill ||
-    v === Cipher.Playfair ||
-    v === Cipher.StandardVigenere ||
-    v === Cipher.Super
-  );
-};
+import {
+  BE_URL,
+  Cipher,
+  CipherForm,
+  CipherResult,
+  InputType,
+  PageStatus,
+  TextInputType,
+  isAffineKey,
+  isCipher,
+  isHillKey,
+  isSuperKey,
+  isTextKey,
+} from "./lib/constants";
+import { safeAtob, safeBtoa } from "./lib/utils";
 
 const ciphers = [
   {
@@ -67,87 +58,6 @@ const ciphers = [
     label: "Super Cipher",
   },
 ];
-
-type TextKey = string;
-type AffineKey = {
-  m: string;
-  b: string;
-};
-type HillKey = {
-  matrixSize: string;
-  matrix: string[][];
-};
-type SuperKey = {
-  vigenere: string;
-  transposition: string;
-};
-type CipherKey = TextKey | AffineKey | HillKey | SuperKey;
-
-const isTextKey = (_key: CipherKey, cipher: Cipher): _key is TextKey => {
-  return (
-    cipher === Cipher.AutoKeyVigenere ||
-    cipher === Cipher.ExtendedVigenere ||
-    cipher === Cipher.StandardVigenere ||
-    cipher === Cipher.Playfair
-  );
-};
-const isAffineKey = (_key: CipherKey, cipher: Cipher): _key is AffineKey => {
-  return cipher === Cipher.Affine;
-};
-const isHillKey = (_key: CipherKey, cipher: Cipher): _key is HillKey => {
-  return cipher === Cipher.Hill;
-};
-const isSuperKey = (_key: CipherKey, cipher: Cipher): _key is SuperKey => {
-  return cipher === Cipher.Super;
-};
-
-enum InputType {
-  Text = "text",
-  File = "file",
-}
-
-enum TextInputType {
-  Text = "text",
-  Base64 = "base64",
-}
-
-type CipherForm = {
-  cipher: Cipher;
-  key: CipherKey;
-  inputType: string;
-  textInputType: string;
-  textInput: string;
-};
-
-const safeBtoa = (v: string) => {
-  try {
-    const result = btoa(v);
-    return result;
-  } catch {
-    return "Cannot convert to base64";
-  }
-};
-
-const safeAtob = (v: string) => {
-  try {
-    const result = atob(v);
-    return result;
-  } catch {
-    return "Invalid base64";
-  }
-};
-
-enum PageStatus {
-  None = "NONE",
-  Loading = "LOADING",
-}
-
-type CipherResult = {
-  data: {
-    text: string;
-    base64: string;
-  };
-};
 
 const App = () => {
   const [form, setForm] = useState<CipherForm>({
