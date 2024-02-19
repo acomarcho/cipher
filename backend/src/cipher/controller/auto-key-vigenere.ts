@@ -1,9 +1,17 @@
 import express from "express";
 import status from "http-status";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
-import { textEncryptRequestSchema, textDecryptRequestSchema } from "../request";
+import {
+  textEncryptRequestSchema,
+  textDecryptRequestSchema,
+  fileTextRequestSchema,
+} from "../request";
 import { ApiResponse } from "../response";
 import { AutoKeyVigenereUseCase } from "../use-case/auto-key-vigenere";
+import fs from "fs/promises";
+import multer from "multer";
+import stream from "stream";
+const upload = multer({ dest: "uploads/" });
 
 export class AutoKeyVigenereController {
   private autoKeyVigenereUseCase;
@@ -35,6 +43,52 @@ export class AutoKeyVigenereController {
           .json(new ApiResponse(null, error));
       }
     });
+
+    this.router.put(
+      "/auto-key-vigenere/encrypt/file",
+      upload.single("file"),
+      async (req, res) => {
+        try {
+          if (!req.file) {
+            return res
+              .status(status.BAD_REQUEST)
+              .json(new ApiResponse(null, "File not given"));
+          }
+
+          const parsedRequest = fileTextRequestSchema.safeParse(req.body);
+          if (!parsedRequest.success) {
+            return res
+              .status(status.BAD_REQUEST)
+              .json(new ApiResponse(null, "Incomplete fields"));
+          }
+
+          const fileContents = await fs.readFile(req.file.path, "utf8");
+
+          const { key } = parsedRequest.data;
+          const result = this.autoKeyVigenereUseCase.encrypt({
+            plainText: sanitizeInputAsAlphabetOnly(fileContents).toUpperCase(),
+            key: sanitizeInputAsAlphabetOnly(key).toUpperCase(),
+          });
+
+          await fs.writeFile(req.file.path, result.text, "utf-8");
+          const newFileContents = await fs.readFile(req.file.path);
+
+          const readStream = new stream.PassThrough();
+          readStream.end(newFileContents);
+
+          res.set(
+            "Content-Disposition",
+            "attachment; filename=" + req.file.originalname
+          );
+          res.set("Content-Type", "text/plain");
+          return readStream.pipe(res);
+        } catch (error) {
+          return res
+            .status(status.INTERNAL_SERVER_ERROR)
+            .json(new ApiResponse(null, error));
+        }
+      }
+    );
 
     this.router.put("/auto-key-vigenere/decrypt/text", (req, res) => {
       try {
