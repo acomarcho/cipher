@@ -335,24 +335,46 @@ export const useCipherForm = () => {
   const handleDecryptClick = async () => {
     try {
       setCipherResult(null);
+      setFileResult(null);
       setPageStatus(PageStatus.Loading);
-
-      const textToSend =
-        form.textInputType === TextInputType.Text
-          ? form.textInput
-          : safeAtob(form.textInput);
 
       const key = generateRequestKey();
 
-      const { data } = await axios.put<CipherResult>(
-        `${BE_URL}/cipher/${form.cipher}/decrypt/text`,
-        {
-          text: textToSend,
-          key,
-        }
-      );
+      if (form.inputType === InputType.Text) {
+        const textToSend =
+          form.textInputType === TextInputType.Text
+            ? form.textInput
+            : safeAtob(form.textInput);
 
-      setCipherResult(data);
+        const { data } = await axios.put<CipherResult>(
+          `${BE_URL}/cipher/${form.cipher}/decrypt/text`,
+          {
+            text: textToSend,
+            key,
+          }
+        );
+
+        setCipherResult(data);
+      } else {
+        if (files.length === 0 || !files[0].file) {
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", files[0].file);
+        formData.append("key", JSON.stringify(key));
+
+        const response = await axios.put(
+          `${BE_URL}/cipher/${form.cipher}/decrypt/file`,
+          formData
+        );
+        setFileResult({
+          file: response.data,
+          fileName:
+            response.headers["content-disposition"].split("filename=")[1],
+        });
+      }
+
       toast.success("Decryption done successfully!");
     } catch {
       toast.error("Failed to perform decryption.");
