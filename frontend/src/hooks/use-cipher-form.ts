@@ -18,6 +18,7 @@ import { ExtFile } from "@files-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import { base64ToBytes } from "byte-base64";
 
 export const useCipherForm = () => {
   const [form, setForm] = useState<CipherForm>({
@@ -310,7 +311,10 @@ export const useCipherForm = () => {
 
         const formData = new FormData();
         formData.append("file", files[0].file);
-        formData.append("key", JSON.stringify(key));
+        formData.append(
+          "key",
+          typeof key === "string" ? key : JSON.stringify(key)
+        );
 
         const response = await axios.put(
           `${BE_URL}/cipher/${form.cipher}/encrypt/file`,
@@ -325,7 +329,6 @@ export const useCipherForm = () => {
 
       toast.success("Encryption done successfully!");
     } catch (error) {
-      console.log(error);
       toast.error("Failed to perform encryption.");
     } finally {
       setPageStatus(PageStatus.None);
@@ -362,21 +365,32 @@ export const useCipherForm = () => {
 
         const formData = new FormData();
         formData.append("file", files[0].file);
-        formData.append("key", JSON.stringify(key));
+        formData.append(
+          "key",
+          typeof key === "string" ? key : JSON.stringify(key)
+        );
 
         const response = await axios.put(
           `${BE_URL}/cipher/${form.cipher}/decrypt/file`,
           formData
         );
+
+        const fileData =
+          form.cipher === Cipher.ExtendedVigenere ||
+          form.cipher === Cipher.Super
+            ? base64ToBytes(response.data)
+            : response.data;
+
         setFileResult({
-          file: response.data,
+          file: fileData,
           fileName:
             response.headers["content-disposition"].split("filename=")[1],
         });
       }
 
       toast.success("Decryption done successfully!");
-    } catch {
+    } catch (error) {
+      console.log(error);
       toast.error("Failed to perform decryption.");
     } finally {
       setPageStatus(PageStatus.None);

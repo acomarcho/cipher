@@ -323,7 +323,7 @@ const App = () => {
                 form.cipher !== Cipher.ExtendedVigenere &&
                 form.cipher !== Cipher.Super
                   ? ".txt"
-                  : "*"
+                  : ""
               }
             >
               {files.map((file) => (
