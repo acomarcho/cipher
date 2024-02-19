@@ -259,9 +259,9 @@ const App = () => {
       const key = isTextKey(form.key, form.cipher) ? form.key : "";
 
       const { data } = await axios.put(
-        `${BE_URL}/${form.cipher}/encrypt/text`,
+        `${BE_URL}/cipher/${form.cipher}/encrypt/text`,
         {
-          plainText: textToSend,
+          text: textToSend,
           key,
         }
       );

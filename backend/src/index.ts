@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 import { StandardVigenereUseCase } from "./cipher/use-case/standard-vigenere";
 import { StandardVigenereController } from "./cipher/controller/standard-vigenere";
@@ -19,6 +20,7 @@ import { SuperUseCase } from "./cipher/use-case/super";
 dotenv.config();
 
 const app: Express = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000;
