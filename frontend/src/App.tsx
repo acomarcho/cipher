@@ -17,6 +17,7 @@ import {
   InputType,
   PageStatus,
   TextInputType,
+  affineMValues,
   isAffineKey,
   isHillKey,
   isSuperKey,
@@ -100,7 +101,7 @@ const App = () => {
             onValueChange={handleCipherChange}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a cipher" />
+              <SelectValue placeholder="Select a cipher ..." />
             </SelectTrigger>
             <SelectContent>
               {ciphers.map((cipher) => {
@@ -131,14 +132,23 @@ const App = () => {
                 <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
                   Value for m
                 </h4>
-                <Input
-                  type="number"
-                  placeholder="Enter value for m ..."
+                <Select
                   value={form.key.m}
-                  onChange={(e) =>
-                    handleAffineKeyMChange(e.currentTarget.value)
-                  }
-                />
+                  onValueChange={handleAffineKeyMChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select value for m ..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {affineMValues.map((value) => {
+                      return (
+                        <SelectItem value={value.toString()} key={value}>
+                          {value}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col gap-[1rem]">
                 <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
