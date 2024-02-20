@@ -4,10 +4,7 @@ import status from "http-status";
 import multer from "multer";
 import stream from "stream";
 import { sanitizeInputAsAlphabetOnly } from "../../util/sanitizer";
-import {
-  affineRequestSchema,
-  fileAffineRequestSchema
-} from "../request";
+import { affineRequestSchema, fileAffineRequestSchema } from "../request";
 import { ApiResponse } from "../response";
 import { AffineUseCase } from "../use-case/affine";
 const upload = multer({ dest: "uploads/" });
@@ -15,6 +12,8 @@ const upload = multer({ dest: "uploads/" });
 export class AffineController {
   private affineUseCase;
   private router;
+
+  private affineMValues = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
 
   constructor(affineUseCase: AffineUseCase) {
     this.affineUseCase = affineUseCase;
@@ -30,6 +29,12 @@ export class AffineController {
         }
 
         const { text, key } = parsedRequest.data;
+        if (!this.affineMValues.includes(key.m)) {
+          return res
+            .status(status.BAD_REQUEST)
+            .json(new ApiResponse(null, "m must be relatively prime to 26"));
+        }
+
         const result = this.affineUseCase.encrypt({
           plainText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: key,
@@ -73,6 +78,12 @@ export class AffineController {
           const fileContents = await fs.readFile(req.file.path, "utf8");
 
           const { key } = parsedRequest.data;
+          if (!this.affineMValues.includes(key.m)) {
+            return res
+              .status(status.BAD_REQUEST)
+              .json(new ApiResponse(null, "m must be relatively prime to 26"));
+          }
+
           const result = this.affineUseCase.encrypt({
             plainText: sanitizeInputAsAlphabetOnly(fileContents).toUpperCase(),
             key: key,
@@ -108,6 +119,12 @@ export class AffineController {
         }
 
         const { text, key } = parsedRequest.data;
+        if (!this.affineMValues.includes(key.m)) {
+          return res
+            .status(status.BAD_REQUEST)
+            .json(new ApiResponse(null, "m must be relatively prime to 26"));
+        }
+
         const result = this.affineUseCase.decrypt({
           cipherText: sanitizeInputAsAlphabetOnly(text).toUpperCase(),
           key: key,
@@ -151,6 +168,12 @@ export class AffineController {
           const fileContents = await fs.readFile(req.file.path, "utf8");
 
           const { key } = parsedRequest.data;
+          if (!this.affineMValues.includes(key.m)) {
+            return res
+              .status(status.BAD_REQUEST)
+              .json(new ApiResponse(null, "m must be relatively prime to 26"));
+          }
+          
           const result = this.affineUseCase.decrypt({
             cipherText: sanitizeInputAsAlphabetOnly(fileContents).toUpperCase(),
             key: key,
