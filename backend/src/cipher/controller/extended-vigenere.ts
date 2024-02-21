@@ -31,7 +31,7 @@ export class ExtendedVigenereController {
 
         const { text, key } = parsedRequest.data;
         const result = this.extendedVigenereUseCase.encrypt({
-          plainText: btoa(text),
+          plainText: text,
           key: key,
         });
 
