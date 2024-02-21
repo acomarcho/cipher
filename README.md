@@ -2,6 +2,8 @@
 
 This is a web application for you to try out several cipher strategies (vigenere with its' variants, playfair, affine, hill, and a combination of vigenere + transposition). All of them are written from scratch in TypeScript. *All the use cases at the backend side are unit tested!*
 
+![image](https://github.com/acomarcho/cipher/assets/29671825/ee0056ef-782a-4334-ad8c-4a09ddc1895c)
+
 ## How to run
 
 Make sure you have Node.js installed on your system. **You need to run both the backend and frontend to run this program**.
